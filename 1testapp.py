@@ -1,12 +1,12 @@
 import sys
 import ac
 import acsys
-import functions.car_data as cf
+# import functions.car_data as cf
 
-# try:
-#     import functions.car_data as cf
-# except:
-#     ac.console("ERROR IMPORTING")
+try:
+    import functions.car_data as cf
+except:
+    ac.console("ERROR IMPORTING")
 
 car_id = 0
 
@@ -15,17 +15,23 @@ def acMain(ac_version):
     # GLOBAL VARIABLES FOR LABELS ON THE DISPLAY
     global l_car_speed, l_car_gas, l_wind_dir, l_wind_speed, l_current_lap, l_last_lap, l_best_lap, l_splits, l_lap_count, l_lap_delta
     # GLOBAL VARIABLES FOR SESSION DATA
-    global car_name, driver_name, track_name, track_config, track_length, wind_speed, wind_dir
+    global car_name, driver_name, track_name, track_config, track_length, wind_speed, wind_dir, has_drs
     # Set the session variables
     driver_name = cf.SESSIONINFO.getDriverName(car_id)
     car_name = cf.SESSIONINFO.getCarName(car_id)
-    track_name = cf.SESSIONINFO.getTrackName(car_id)
-    track_config = cf.SESSIONINFO.getTrackConfig(car_id)
-    track_length = cf.SESSIONINFO.getTrackLength(car_id)
+    track_name = cf.SESSIONINFO.getTrackName()
+    track_config = cf.SESSIONINFO.getTrackConfig()
+    track_length = cf.SESSIONINFO.getTrackLength()
     # wind_speed = cf.ACSESSION.getWindSpeed(car_id)
     # wind_dir = cf.ACSESSION.getWindDir()
 
+    # TEST ZONE
+    #############
+    has_drs = cf.CARSTATS.getHasDRS()
+    ac.console("Here")
+    ac.console(str(has_drs))
     ac.console(str(driver_name))
+    ##############
 
     display = ac.newApp("1testapp")
     ac.setSize(display, 300, 300)
@@ -71,7 +77,7 @@ def acUpdate(deltaT):
 
     #Car info functions called
     car_speed = cf.CARINFO.getSpeed(car_id)
-    car_gas = cf.CARINFO.getGasInput(car_id)
+    car_gas = cf.INPUTINFO.getGasInput(car_id)
 
     #Lap info functions called
     current_lap = cf.LAPINFO.getCurrentLapTimeF(car_id)

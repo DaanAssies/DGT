@@ -1,6 +1,14 @@
+import os
 import sys
 import ac
 import acsys
+
+sysdir = os.path.dirname(__file__) + '/../stdlib64'
+sys.path.insert(0, sysdir)
+sys.path.insert(0, os.path.dirname(__file__) + '/../shared_memory')
+os.environ['PATH'] = os.environ['PATH'] + ";."
+
+from shared_memory.sim_info import info
 
 
 def formatTime(millis):
@@ -107,12 +115,12 @@ class LAPINFO:
         formattedtimes = []
 
         if len(times) != 0:
-            ac.console("lol")
             for t in times:
                 formattedtimes.append(formatTime(t))
             return formattedtimes
         else:
             return "--:--"
+
     ##############
 
     @staticmethod
@@ -134,6 +142,11 @@ class CARINFO:
             return ac.getCarState(car, acsys.CS.SpeedMPH)
         elif unit == "ms":
             return ac.getCarState(car, acsys.CS.SpeedMS)
+
+    # TODO: TEST
+    @staticmethod
+    def getRPM(car):
+        return ac.getCarState(car, acsys.CS.RPM)
 
     # TODO: TEST
     @staticmethod
@@ -206,6 +219,20 @@ class CARINFO:
 
     # TODO: TEST
     @staticmethod
+    def getPosition(car):
+        return ac.getCarRealTimeLeaderboardPosition(car) + 1
+
+
+class CARSTATS:
+    # TODO: TEST
+    @staticmethod
+    def getHasDRS():
+        ac.console("here")
+        return info.static.hasDRS
+
+class INPUTINFO:
+    # TODO: TEST
+    @staticmethod
     def getGasInput(car):
         return ac.getCarState(car, acsys.CS.Gas)
 
@@ -229,8 +256,3 @@ class CARINFO:
     @staticmethod
     def getCurrentGear(car):
         return ac.getCarState(car, acsys.CS.Gear)
-
-    # TODO: TEST
-    @staticmethod
-    def getPosition(car):
-        return ac.getCarRealTimeLeaderboardPosition(car) + 1
