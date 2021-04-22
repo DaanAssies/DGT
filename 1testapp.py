@@ -1,6 +1,7 @@
 import sys
 import ac
 import acsys
+import time
 # import functions.car_data as cf
 
 try:
@@ -76,6 +77,8 @@ def acUpdate(deltaT):
     # wind_speed = cf.ACSESSION.getWindSpeed(car_id)
 
     #Car info functions called
+    curr_time = time.asctime( time.localtime(time.time()) )
+    ac.log(str(curr_time))
     car_speed = cf.CARINFO.getSpeed(car_id)
     car_gas = cf.INPUTINFO.getGasInput(car_id)
 

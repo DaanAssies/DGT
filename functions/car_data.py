@@ -20,6 +20,11 @@ def formatTime(millis):
 
 
 class SESSIONINFO:
+    # TODO: TEST
+    @staticmethod
+    def getSessionType():
+        return info.graphics.session
+
     @staticmethod
     def getDriverName(car):
         return ac.getDriverName(car)
@@ -49,6 +54,7 @@ class SESSIONINFO:
     # def getWindDir():
     #     return ac.getWindDirection()
 
+    # Returns session's max no. of cars
     @staticmethod
     def getCarsCount():
         return ac.getCarsCount
@@ -69,10 +75,15 @@ class LAPINFO:
         return ac.getCarState(car, acsys.CS.BestLap)
 
     @staticmethod
+    def getSplit():
+        return info.graphics.split
+
+    @staticmethod
     def getSplits(car):
         return ac.getLastSplits(car)
 
     # TODO: Check whether invalidated value is 1 or 0
+    # Maybe check whether you come out of pits
     # TODO: TEST
     @staticmethod
     def getInvalid(car):
@@ -126,6 +137,14 @@ class LAPINFO:
     @staticmethod
     def getLapCount(car):
         return ac.getCarState(car, acsys.CS.LapCount) + 1
+
+    # TODO: TEST
+    @staticmethod
+    def getLaps():
+        if info.graphics.numberOfLaps > 0:
+            return info.graphics.numberOfLaps
+        else:
+            return "-"
 
     # Delta to fastest lap
     @staticmethod
@@ -256,3 +275,18 @@ class INPUTINFO:
     @staticmethod
     def getCurrentGear(car):
         return ac.getCarState(car, acsys.CS.Gear)
+
+    # TODO: TEST
+    @staticmethod
+    @staticmethod
+    def getCarDamage(loc="front"):
+        if loc == "front":
+            return info.physics.carDamage[0]
+        elif loc == "rear":
+            return info.physics.carDamage[1]
+        elif loc == "left":
+            return info.physics.carDamage[2]
+        elif loc == "right":
+            return info.physics.carDamage[3]
+        else:
+            return info.physics.carDamage[4]
