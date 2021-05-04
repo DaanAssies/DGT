@@ -19,18 +19,29 @@ def formatTime(millis):
     return "{:02d}:{:02d}.{:03d}".format(m, s, ms)
 
 
+def formatGear(gear):
+    if gear == 0:
+        return "R"
+    elif gear == 1:
+        return "N"
+    else:
+        return str(gear - 1)
+
+
 class SESSIONINFO:
-    # TODO: TEST
+    # returns type ACC_SESSION_TYPE
+    # unknown = -1, practice = 0, qualifying = 1, race = 2, hotlap = 3, timeattack = 4, rest irrelevant
+    # For some reason this only works after x amount of ticks after loading into the game. It returns 0 before that.
     @staticmethod
     def getSessionType():
         return info.graphics.session
 
     @staticmethod
-    def getDriverName(car):
+    def getDriverName(car=0):
         return ac.getDriverName(car)
 
     @staticmethod
-    def getCarName(car):
+    def getCarName(car=0):
         return ac.getCarName(car)
 
     @staticmethod
@@ -45,100 +56,78 @@ class SESSIONINFO:
     def getTrackLength():
         return ac.getTrackLength(0)
 
-    # WIND IS NOT A FUNCTION IN ac PACKAGE
-    # @staticmethod
-    # def getWindSpeed():
-    #     return ac.getWindSpeed()
-    #
-    # @staticmethod
-    # def getWindDir():
-    #     return ac.getWindDirection()
-
     # Returns session's max no. of cars
     @staticmethod
     def getCarsCount():
-        return ac.getCarsCount
+        return ac.getCarsCount()
 
 
 class LAPINFO:
+    @staticmethod
+    def getCurrentLapTime(car=0, formatted=False):
+        if formatted:
+            time = ac.getCarState(car, acsys.CS.LapTime)
+            if time > 0:
+                return formatTime(time)
+            else:
+                return "--:--"
+        else:
+            return ac.getCarState(car, acsys.CS.LapTime)
 
     @staticmethod
-    def getCurrentLapTime(car):
-        return ac.getCarState(car, acsys.CS.LapTime)
+    def getLastLapTime(car=0, formatted=False):
+        if formatted:
+            time = ac.getCarState(car, acsys.CS.LastLap)
+            if time > 0:
+                return formatTime(time)
+            else:
+                return "--:--"
+        else:
+            return ac.getCarState(car, acsys.CS.LastLap)
+
+    # The best lap does not safe if it was an invalidated lap
+    @staticmethod
+    def getBestLapTime(car=0, formatted=False):
+        if formatted:
+            time = ac.getCarState(car, acsys.CS.BestLap)
+            if time > 0:
+                return formatTime(time)
+            else:
+                return "--:--"
+        else:
+            return ac.getCarState(car, acsys.CS.BestLap)
 
     @staticmethod
-    def getLastLapTime(car):
-        return ac.getCarState(car, acsys.CS.LastLap)
+    def getSplits(car=0, formatted=False):
+        if formatted:
+            times = ac.getLastSplits(car)
+            formattedtimes = []
 
-    @staticmethod
-    def getBestLapTime(car):
-        return ac.getCarState(car, acsys.CS.BestLap)
+            if len(times) != 0:
+                for t in times:
+                    formattedtimes.append(formatTime(t))
+                return formattedtimes
+            else:
+                return "--:--"
+        else:
+            return ac.getLastSplits(car)
 
+    # Returns the last sector split to 1 decimal and returns nothing if the last sector completed a lap.
     @staticmethod
     def getSplit():
         return info.graphics.split
 
+    # False when lap counts, True when lap doesn't count.
+    # Updates live so needs a check every lap whether there was a True value.
     @staticmethod
-    def getSplits(car):
-        return ac.getLastSplits(car)
-
-    # TODO: Check whether invalidated value is 1 or 0
-    # Maybe check whether you come out of pits
-    # TODO: TEST
-    @staticmethod
-    def getInvalid(car):
-        if ac.getCarState(car, acsys.CS.LapInvalidated) == 1:
-            return True
-        else:
-            return False
-
-    # FORMATTED LAP DATA FROM FUNCTIONS ABOVE, same function names but with an F appended
-    # TODO: Set formatting as option in functions above
-    ###############
-    @staticmethod
-    def getCurrentLapTimeF(car):
-        time = ac.getCarState(car, acsys.CS.LapTime)
-        if time > 0:
-            return formatTime(time)
-        else:
-            return "--:--"
+    def getInvalid(car=0):
+        return ac.getCarState(car, acsys.CS.LapInvalidated) or CARINFO.getTyresOut() > 2
 
     @staticmethod
-    def getLastLapTimeF(car):
-        time = ac.getCarState(car, acsys.CS.LastLap)
-        if time > 0:
-            return formatTime(time)
-        else:
-            return "--:--"
-
-    @staticmethod
-    def getBestLapTimeF(car):
-        time = ac.getCarState(car, acsys.CS.BestLap)
-        if time > 0:
-            return formatTime(time)
-        else:
-            return "--:--"
-
-    # Sector times of last lap
-    @staticmethod
-    def getSplitsF(car):
-        times = ac.getLastSplits(car)
-        formattedtimes = []
-
-        if len(times) != 0:
-            for t in times:
-                formattedtimes.append(formatTime(t))
-            return formattedtimes
-        else:
-            return "--:--"
-
-    ##############
-
-    @staticmethod
-    def getLapCount(car):
+    def getLapCount(car=0):
         return ac.getCarState(car, acsys.CS.LapCount) + 1
 
-    # TODO: TEST
+    # Returns the total number of laps in the race
     @staticmethod
     def getLaps():
         if info.graphics.numberOfLaps > 0:
@@ -148,13 +137,13 @@ class LAPINFO:
 
     # Delta to fastest lap
     @staticmethod
-    def getLapDelta(car):
+    def getLapDelta(car=0):
         return ac.getCarState(car, acsys.CS.PerformanceMeter)
 
 
 class CARINFO:
     @staticmethod
-    def getSpeed(car, unit="kmh"):
+    def getSpeed(car=0, unit="kmh"):
         if unit == "kmh":
             return ac.getCarState(car, acsys.CS.SpeedKMH)
         elif unit == "mph":
@@ -162,14 +151,8 @@ class CARINFO:
         elif unit == "ms":
             return ac.getCarState(car, acsys.CS.SpeedMS)
 
-    # TODO: TEST
     @staticmethod
-    def getRPM(car):
-        return ac.getCarState(car, acsys.CS.RPM)
-
-    # TODO: TEST
-    @staticmethod
-    def getDeltaToPrevCar(formatted=False):
+    def getDeltaToCarAhead(formatted=False):
         time = 0
         dist = 0
         track_len = SESSIONINFO.getTrackLength()
@@ -199,16 +182,15 @@ class CARINFO:
             else:
                 return "+{:3.3f}".format(time)
 
-    # TODO: TEST
     @staticmethod
-    def getDeltaToNextCar(formatted=False):
+    def getDeltaToCarBehind(formatted=False):
         time = 0
         dist = 0
         track_len = SESSIONINFO.getTrackLength()
         lap = LAPINFO.getLapCount(0)
         pos = CARINFO.getLocation(0)
-
         for car in range(SESSIONINFO.getCarsCount()):
+            ac.console("lol")
             if CARINFO.getPosition(car) == CARINFO.getPosition(0) + 1:
                 lap_next = LAPINFO.getLapCount(car)
                 pos_next = CARINFO.getLocation(car)
@@ -231,53 +213,109 @@ class CARINFO:
             else:
                 return "-{:3.3f}".format(time)
 
-    # TODO: TEST
+    # Gets the position of the car on track. 0 is the start/finish line [0,1]
     @staticmethod
-    def getLocation(car):
+    def getLocation(car=0):
         return ac.getCarState(car, acsys.CS.NormalizedSplinePosition)
+
+    # Gets the location of the car in [x,y,z] coordinates, x=0,z=0 is middle
+    @staticmethod
+    def getWorldLocation(car=0):
+        return ac.getCarState(car, acsys.CS.WorldPosition)
 
     # TODO: TEST
     @staticmethod
     def getPosition(car):
         return ac.getCarRealTimeLeaderboardPosition(car) + 1
 
+    # TODO: TEST
+    @staticmethod
+    def getDRSEnabled():
+        return info.physics.drsEnabled
+
+    # TODO: TEST
+    @staticmethod
+    def getCurrentGear(car=0):
+        return formatGear(ac.getCarState(car, acsys.CS.Gear))
+
+    # TODO: TEST
+    @staticmethod
+    def getRPM(car=0):
+        return ac.getCarState(car, acsys.CS.RPM)
+
+    # TODO: TEST
+    @staticmethod
+    def getRPMMax():
+        if info.static.maxRpm:
+            return info.static.maxRpm
+        else:
+            return 8000
+
+    # TODO: TEST
+    @staticmethod
+    def getFuel():
+        return info.physics.fuel
+
+    # TODO: TEST
+    @staticmethod
+    def getMaxFuel():
+        return info.static.maxFuel
+
+    # Returns the amount of tyres off-track
+    @staticmethod
+    def getTyresOut():
+        return info.physics.numberOfTyresOut
 
 class CARSTATS:
     # TODO: TEST
     @staticmethod
     def getHasDRS():
-        ac.console("here")
         return info.static.hasDRS
+
+    # TODO: TEST
+    @staticmethod
+    def getHasERS():
+        return info.static.hasERS
+
+    # TODO: TEST
+    @staticmethod
+    def getHasKERS():
+        return info.static.hasKERS
+
+    # TODO: TEST
+    @staticmethod
+    def ABS():
+        return info.physics.abs
+
 
 class INPUTINFO:
     # TODO: TEST
     @staticmethod
-    def getGasInput(car):
+    def getGasInput(car=0):
         return ac.getCarState(car, acsys.CS.Gas)
 
     # TODO: TEST
     @staticmethod
-    def getBrakeInput(car):
+    def getBrakeInput(car=0):
         return ac.getCarState(car, acsys.CS.Brake)
 
     # TODO: TEST
     @staticmethod
-    def getClutchInput(car):
+    def getClutchInput(car=0):
         return ac.getCarState(car, acsys.CS.Clutch)
 
     # TODO: TEST
     # In radians [-2pi, 2pi]
     @staticmethod
-    def getSteerInput(car):
+    def getSteerInput(car=0):
         return ac.getCarState(car, acsys.CS.Steer)
 
     # TODO: TEST
     @staticmethod
-    def getCurrentGear(car):
+    def getCurrentGear(car=0):
         return ac.getCarState(car, acsys.CS.Gear)
 
     # TODO: TEST
-    @staticmethod
     @staticmethod
     def getCarDamage(loc="front"):
         if loc == "front":
@@ -290,3 +328,26 @@ class INPUTINFO:
             return info.physics.carDamage[3]
         else:
             return info.physics.carDamage[4]
+
+class AEROINFO:
+    # Methods in this class return a scalar vector
+    # TODO: TEST
+    @staticmethod
+    def getDrag(car=0):
+        return ac.getCarState(car, acsys.CS.Aero, 0)
+
+    # TODO: TEST
+    @staticmethod
+    def getLiftFront(car=0):
+        return ac.getCarState(car, acsys.CS.Aero, 1)
+
+    # TODO: TEST
+    @staticmethod
+    def getLiftRear(car=0):
+        return ac.getCarState(car, acsys.CS.Aero, 2)
+
+class TYREINFO:
+    # TODO: TEST ALL
+    @staticmethod
+    def getTyreWear():
+        return info.physics.tyreWear
