@@ -122,7 +122,7 @@ class SPageFileGraphic(ctypes.Structure):
         ('penaltyTime', c_float),
         ('flag', AC_FLAG_TYPE),
         ('idealLineOn', c_int32),
-        ('isInPitLine', c_int32),
+        ('isInPitLane', c_int32),
         ('surfaceGrip', c_float),
         ('mandatoryPitDone', c_int32),
         ('windSpeed', c_float),

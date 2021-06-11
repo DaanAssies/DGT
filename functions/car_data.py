@@ -61,6 +61,11 @@ class SESSIONINFO:
     def getCarsCount():
         return ac.getCarsCount()
 
+    # Returns the session status. 0=OFF, 1= REPLAY, 2=LIVE, 3=PAUSE
+    @staticmethod
+    def getSessionStatus():
+        return info.graphics.status
+
 
 class LAPINFO:
     @staticmethod
@@ -190,7 +195,6 @@ class CARINFO:
         lap = LAPINFO.getLapCount(0)
         pos = CARINFO.getLocation(0)
         for car in range(SESSIONINFO.getCarsCount()):
-            ac.console("lol")
             if CARINFO.getPosition(car) == CARINFO.getPosition(0) + 1:
                 lap_next = LAPINFO.getLapCount(car)
                 pos_next = CARINFO.getLocation(car)
@@ -235,7 +239,7 @@ class CARINFO:
 
     # TODO: TEST
     @staticmethod
-    def getCurrentGear(car=0):
+    def getFormattedGear(car=0):
         return formatGear(ac.getCarState(car, acsys.CS.Gear))
 
     # TODO: TEST
@@ -265,6 +269,10 @@ class CARINFO:
     @staticmethod
     def getTyresOut():
         return info.physics.numberOfTyresOut
+
+    @staticmethod
+    def getCarInPit():
+        return info.graphics.isInPitLane
 
 class CARSTATS:
     # TODO: TEST
