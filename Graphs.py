@@ -12,7 +12,7 @@ def lapTimestamps():
     last = "e"
     prevline = ""
 
-    with open('C:/Users/daana/OneDrive/Documenten/Assetto Corsa/logs/lap.txt', 'r') as f:
+    with open('C:/Users/daana/OneDrive/Documenten/Assetto Corsa/logs/TestData/lap.txt', 'r') as f:
         lines = f.readlines()
         for line in lines:
             strline = line.replace("\'", "\"")
@@ -52,7 +52,7 @@ def plotSteerInput():
     time = []
     tss = lapTimestamps()
 
-    with open('C:/Users/daana/OneDrive/Documenten/Assetto Corsa/logs/input.txt', 'r') as file:
+    with open('C:/Users/daana/OneDrive/Documenten/Assetto Corsa/logs/TestData/input.txt', 'r') as file:
         lines = file.readlines()
         for l in lines:
             strline = l.replace("\'", "\"")
@@ -61,7 +61,7 @@ def plotSteerInput():
                 steerInput.append(jline["steering"])
     file.close()
 
-    with open('C:/Users/daana/OneDrive/Documenten/Assetto Corsa/logs/lap.txt', 'r') as file:
+    with open('C:/Users/daana/OneDrive/Documenten/Assetto Corsa/logs/TestData/lap.txt', 'r') as file:
         lines = file.readlines()
         for l in lines:
             strline = l.replace("\'", "\"")
@@ -78,7 +78,7 @@ def plotGasInput():
     tss = lapTimestamps()
     print(str(tss))
 
-    with open('C:/Users/daana/OneDrive/Documenten/Assetto Corsa/logs/input.txt', 'r') as file:
+    with open('C:/Users/daana/OneDrive/Documenten/Assetto Corsa/logs/TestData/input.txt', 'r') as file:
         lines = file.readlines()
         for l in lines:
             strline = l.replace("\'", "\"")
@@ -88,7 +88,7 @@ def plotGasInput():
                 # time.append(jline["timestamp"])
     file.close()
 
-    with open('C:/Users/daana/OneDrive/Documenten/Assetto Corsa/logs/lap.txt', 'r') as file:
+    with open('C:/Users/daana/OneDrive/Documenten/Assetto Corsa/logs/TestData/lap.txt', 'r') as file:
         lines = file.readlines()
         for l in lines:
             strline = l.replace("\'", "\"")
@@ -106,7 +106,7 @@ def plotSpeed():
     time = []
     tss = lapTimestamps()
 
-    with open('C:/Users/daana/OneDrive/Documenten/Assetto Corsa/logs/car.txt', 'r') as file:
+    with open('C:/Users/daana/OneDrive/Documenten/Assetto Corsa/logs/TestData/car.txt', 'r') as file:
         lines = file.readlines()
         for l in lines:
             strline = l.replace("\'", "\"")
@@ -114,7 +114,7 @@ def plotSpeed():
             if tss[5] >= jline["timestamp"] >= tss[4]:
                 speed.append(jline["car_speed"])
         file.close()
-    with open('C:/Users/daana/OneDrive/Documenten/Assetto Corsa/logs/lap.txt', 'r') as file:
+    with open('C:/Users/daana/OneDrive/Documenten/Assetto Corsa/logs/TestData/lap.txt', 'r') as file:
         lines = file.readlines()
         for l in lines:
             strline = l.replace("\'", "\"")

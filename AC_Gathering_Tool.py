@@ -6,7 +6,6 @@ import os
 
 try:
     import functions.car_data as cf
-    import StringToDictionay as dc
 except:
     ac.console("ERROR IMPORTING")
 
@@ -155,9 +154,6 @@ def acUpdate(deltaT):
             lap_file.write((str(dCarInfo)))
             lap_file.write("\n")
             lap_file.close()
-
-
-    # dc.move()
 
     # # Clear py.log to make sure it does not reach 2000 lines limit
     # with open('C:/Users/daana/OneDrive/Documenten/Assetto Corsa/logs/py_log.txt', 'r+') as py_log:
