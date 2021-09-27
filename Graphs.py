@@ -57,7 +57,7 @@ def plotSteerInput():
         for l in lines:
             strline = l.replace("\'", "\"")
             jline = json.loads(strline)
-            if tss[6] >= jline["timestamp"] >= tss[5]:
+            if tss[5] >= jline["timestamp"] >= tss[4]:
                 steerInput.append(jline["steering"])
     file.close()
 
@@ -66,7 +66,7 @@ def plotSteerInput():
         for l in lines:
             strline = l.replace("\'", "\"")
             jline = json.loads(strline)
-            if tss[6] >= jline["timestamp"] >= tss[5]:
+            if tss[5] >= jline["timestamp"] >= tss[4]:
                 time.append(jline["current"] / 1000)
     file.close()
     plt.plot(time, steerInput)
@@ -83,7 +83,7 @@ def plotGasInput():
         for l in lines:
             strline = l.replace("\'", "\"")
             jline = json.loads(strline)
-            if tss[6] >= jline["timestamp"] >= tss[5]:
+            if tss[5] >= jline["timestamp"] >= tss[4]:
                 gasInput.append(jline["gas"])
                 # time.append(jline["timestamp"])
     file.close()
@@ -93,7 +93,7 @@ def plotGasInput():
         for l in lines:
             strline = l.replace("\'", "\"")
             jline = json.loads(strline)
-            if tss[6] >= jline["timestamp"] >= tss[5]:
+            if tss[5] >= jline["timestamp"] >= tss[4]:
                 time.append(jline["lap_position"])
     file.close()
     print(str(gasInput))
@@ -125,11 +125,13 @@ def plotSpeed():
         print(str(speed))
         print(str(time))
     plt.plot(time, speed)
+    plt.xlabel("Lap progress")
+    plt.ylabel("Speed in km/h")
     plt.show()
 
 
 def main():
-    plotSpeed()
+    plotSteerInput()
 
 
 if __name__ == "__main__":

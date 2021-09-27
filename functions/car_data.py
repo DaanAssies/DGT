@@ -335,6 +335,7 @@ class INPUTINFO:
         elif loc == "right":
             return info.physics.carDamage[3]
         else:
+            # Centre
             return info.physics.carDamage[4]
 
 class AEROINFO:
@@ -355,7 +356,37 @@ class AEROINFO:
         return ac.getCarState(car, acsys.CS.Aero, 2)
 
 class TYREINFO:
+    # 0 = FL, 1 = FR, 2 = RL, 3 = RR
     # TODO: TEST ALL
+    # TODO: Might want a check that values do not exceed 3
+    # TODO: Check value, might need some calculation
     @staticmethod
-    def getTyreWear():
-        return info.physics.tyreWear
+    def getTyreWearValue(tyre):
+        return info.physics.tyreWear[tyre]
+
+    @staticmethod
+    def getTyreDirtyLevel(tyre):
+        return info.physics.TyreDirtyLevel[tyre]
+
+    @staticmethod
+    def getTyreTemperature(tyre, loc):
+        # Inner
+        if loc == "i":
+            return info.physics.tyreTempI[tyre]
+        # Middle
+        elif loc == "m":
+            return info.physics.tyreTempM[tyre]
+        # Outer
+        elif loc == "o":
+            return info.physics.tyreTempO[tyre]
+        # Core
+        elif loc == "c":
+            return info.physics.tyreCoreTemperature[tyre]
+
+    @staticmethod
+    def getTyrePressure(tyre):
+        return info.physics.wheelsPressure[tyre]
+
+    @staticmethod
+    def getBrakeTemperature(loc):
+        return info.physics.brakeTemp[loc]
