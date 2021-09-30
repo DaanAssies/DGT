@@ -4,10 +4,16 @@ import acsys
 import time
 import os
 
-try:
-    import functions.car_data as cf
-except:
-    ac.console("ERROR IMPORTING")
+# try:
+import functions.aero_info as ai
+import functions.car_info as ci
+import functions.car_stats as cs
+import functions.input_info as ii
+import functions.lap_info as li
+import functions.session_info as si
+import functions.tyre_info as ti
+# except:
+#     ac.console("ERROR IMPORTING")
 
 car_id = 0
 
@@ -23,23 +29,23 @@ def acMain(ac_version):
     global is_invalid
 
     # Set the session variables
-    driver_name = cf.SESSIONINFO.getDriverName(car_id)
-    car_name = cf.SESSIONINFO.getCarName(car_id)
-    track_name = cf.SESSIONINFO.getTrackName()
-    track_config = cf.SESSIONINFO.getTrackConfig()
-    track_length = cf.SESSIONINFO.getTrackLength()
-    session_type = cf.SESSIONINFO.getSessionType()
+    driver_name = si.getDriverName(car_id)
+    car_name = si.getCarName(car_id)
+    track_name = si.getTrackName()
+    track_config = si.getTrackConfig()
+    track_length = si.getTrackLength()
+    session_type = si.getSessionType()
     # Set the car info variables
-    has_drs = cf.CARSTATS.getHasDRS()
-    car_count = cf.SESSIONINFO.getCarsCount()
+    has_drs = cs.getHasDRS()
+    car_count = si.getCarsCount()
 
     # TEST ZONE
     #############
-    ac.console(str(driver_name))
-    ac.console("Car count: " + str(car_count))
+    # ac.console(str(driver_name))
+    # ac.console("Car count: " + str(car_count))
     ##############
 
-    display = ac.newApp("1testapp")
+    display = ac.newApp("DGT")
     ac.setSize(display, 300, 300)
 
     # Display settings for testing
@@ -70,7 +76,7 @@ def acMain(ac_version):
 
 
 
-    return "1testapp"
+    return "DGT"
 
 
 def acUpdate(deltaT):
@@ -88,13 +94,13 @@ def acUpdate(deltaT):
 
     ts = round(time.time() * 1000)
 
-    session_status = cf.SESSIONINFO.getSessionStatus()
-    ac.console(str(session_status))
+    session_status = si.getSessionStatus()
+    # ac.console(str(session_status))
 
     # Input info functions called
-    gas_input = cf.INPUTINFO.getGasInput(car_id)
-    brake_input = cf.INPUTINFO.getBrakeInput(car_id)
-    steer_input = cf.INPUTINFO.getSteerInput(car_id)
+    gas_input = ii.getGasInput(car_id)
+    brake_input = ii.getBrakeInput(car_id)
+    steer_input = ii.getSteerInput(car_id)
 
     dInputInfo = {
         "flag": 0,
@@ -105,14 +111,14 @@ def acUpdate(deltaT):
     }
 
     # Car info functions called
-    car_speed = cf.CARINFO.getSpeed(car_id)
+    car_speed = ci.getSpeed(car_id)
     # ac.console(car_speed)
-    rpm = cf.CARINFO.getRPM(car_id)
-    delta_ahead = cf.CARINFO.getDeltaToCarAhead(True)
-    delta_behind = cf.CARINFO.getDeltaToCarBehind(True)
-    location = cf.CARINFO.getLocation(car_id)
-    world_location = cf.CARINFO.getWorldLocation()
-    is_in_pit = cf.CARINFO.getCarInPit()
+    rpm = ci.getRPM(car_id)
+    delta_ahead = ci.getDeltaToCarAhead(True)
+    delta_behind = ci.getDeltaToCarBehind(True)
+    location = ci.getLocation(car_id)
+    world_location = ci.getWorldLocation()
+    is_in_pit = ci.getCarInPit()
 
     dCarInfo = {
         "flag": 1,
@@ -121,15 +127,15 @@ def acUpdate(deltaT):
         "rpm": rpm}
 
     # Lap info functions called
-    current_lap = cf.LAPINFO.getCurrentLapTime(car_id)
-    last_lap = cf.LAPINFO.getLastLapTime(car_id, True)
-    best_lap = cf.LAPINFO.getBestLapTime(car_id, True)
-    splits = cf.LAPINFO.getSplits(car_id, True)
-    lap_count = cf.LAPINFO.getLapCount(car_id)
-    lap_delta = cf.LAPINFO.getLapDelta(car_id)
-    is_invalid = cf.LAPINFO.getInvalid(car_id)
-    split = cf.LAPINFO.getSplit()
-    lap_pos = cf.CARINFO.getLocation(car_id)
+    current_lap = li.getCurrentLapTime(car_id)
+    last_lap = li.getLastLapTime(car_id, True)
+    best_lap = li.getBestLapTime(car_id, True)
+    splits = li.getSplits(car_id, True)
+    lap_count = li.getLapCount(car_id)
+    lap_delta = li.getLapDelta(car_id)
+    is_invalid = li.getInvalid(car_id)
+    split = li.getSplit()
+    lap_pos = ci.getLocation(car_id)
 
     dLapInfo = {
         "lap_position": lap_pos,

@@ -1,8 +1,5 @@
 import matplotlib.pyplot as plt
 import json
-import StringToDictionay as dc
-from itertools import islice
-import os
 
 
 def lapTimestamps():
