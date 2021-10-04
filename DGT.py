@@ -40,10 +40,10 @@ def acMain(ac_version):
     car_count = si.getCarsCount()
 
     # TEST ZONE
-    #############
-    # ac.console(str(driver_name))
-    # ac.console("Car count: " + str(car_count))
-    ##############
+    # ############
+    ac.console(str(driver_name))
+    ac.console("Car count: " + str(car_count))
+    # #############
 
     display = ac.newApp("DGT")
     ac.setSize(display, 300, 300)
