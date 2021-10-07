@@ -11,14 +11,14 @@ os.environ['PATH'] = os.environ['PATH'] + ";."
 from functions.shared_memory import info
 
 # 0 = FL, 1 = FR, 2 = RL, 3 = RR
-# TODO: TEST ALL
-# TODO: Might want a check that values do not exceed 3
-# TODO: Check value, might need some calculation
+
+# 100 is best, 0 is fully worn (puncture)
 def getTyreWearValue(tyre):
     return info.physics.tyreWear[tyre]
 
+# 0 is clean, 5 is most dirty.
 def getTyreDirtyLevel(tyre):
-    return info.physics.TyreDirtyLevel[tyre]
+    return info.physics.tyreDirtyLevel[tyre]
 
 def getTyreTemperature(tyre, loc):
     # Inner
@@ -37,5 +37,6 @@ def getTyreTemperature(tyre, loc):
 def getTyrePressure(tyre):
     return info.physics.wheelsPressure[tyre]
 
+# Stays 26.0 for some reason
 def getBrakeTemperature(loc):
     return info.physics.brakeTemp[loc]

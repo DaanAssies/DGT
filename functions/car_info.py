@@ -10,15 +10,6 @@ os.environ['PATH'] = os.environ['PATH'] + ";."
 
 from functions.shared_memory import info
 
-
-def formatGear(gear):
-    if gear == 0:
-        return "R"
-    elif gear == 1:
-        return "N"
-    else:
-        return str(gear - 1)
-
 def formatTime(millis):
     m = int(millis / 60000)
     s = int((millis % 60000) / 1000)
@@ -106,37 +97,33 @@ def getLocation(car=0):
 def getWorldLocation(car=0):
     return ac.getCarState(car, acsys.CS.WorldPosition)
 
-# TODO: TEST
+# Leading car is in position 0
 def getPosition(car):
     return ac.getCarRealTimeLeaderboardPosition(car) + 1
 
-# TODO: TEST
+# 0 if disabled, 1 if enabled
 def getDRSEnabled():
     return info.physics.drsEnabled
 
-# TODO: TEST
-def getFormattedGear(car=0):
-    return formatGear(ac.getCarState(car, acsys.CS.Gear))
+# Formatted: 0=R, 1=N, 2=1, 3=2, 4=3, 5=4, 6=5, 7=6, 8=7, etc.
+def getFormattedGear(car=0, formatted=True):
+    gear = ac.getCarState(car, acsys.CS.Gear)
+    if formatted:
+        if gear == 0:
+            return "R"
+        elif gear == 1:
+            return "N"
+        else:
+            return str(gear - 1)
+    else:
+        return gear
 
-# TODO: TEST
 def getRPM(car=0):
     return ac.getCarState(car, acsys.CS.RPM)
 
-# TODO: TEST
-def getRPMMax():
-    if info.static.maxRpm:
-        return info.static.maxRpm
-    else:
-        return 8000
-
-# TODO: TEST
+# Amount of fuel in the car in KGs
 def getFuel():
     return info.physics.fuel
-
-# TODO: TEST
-
-def getMaxFuel():
-    return info.static.maxFuel
 
 # Returns the amount of tyres off-track
 
@@ -145,3 +132,18 @@ def getTyresOut():
 
 def getCarInPit():
     return info.graphics.isInPitLane
+
+
+# Damage numbers go up to a high number. A slight tap results in a damage value of about 10
+def getCarDamage(loc="front"):
+    if loc == "front":
+        return info.physics.carDamage[0]
+    elif loc == "rear":
+        return info.physics.carDamage[1]
+    elif loc == "left":
+        return info.physics.carDamage[2]
+    elif loc == "right":
+        return info.physics.carDamage[3]
+    else:
+        # Centre
+        return info.physics.carDamage[4]

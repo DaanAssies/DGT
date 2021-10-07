@@ -20,13 +20,13 @@ car_id = 0
 
 def acMain(ac_version):
     # GLOBAL VARIABLES FOR LABELS ON THE DISPLAY
-    global l_car_speed, l_delta_ahead, l_delta_behind, l_location, l_world_location, l_session_status
+    global l_drag, l_lift_front, l_lift_rear
     # GLOBAL VARIABLES FOR SESSION DATA
     global car_name, driver_name, track_name, track_config, track_length, session_type, car_count
-    # GLOBAL VARIABLES FOR CAR INFO
-    global has_drs
     # GLOBAL VARIABLES FOR LAP INFO
     global is_invalid
+    # GLOBAL VARIABLES FOR CAR STATISTICS
+    global has_drs, has_ers, has_kers, has_abs, max_rpm
 
     # Set the session variables
     driver_name = si.getDriverName(car_id)
@@ -35,14 +35,26 @@ def acMain(ac_version):
     track_config = si.getTrackConfig()
     track_length = si.getTrackLength()
     session_type = si.getSessionType()
-    # Set the car info variables
+    # Set the car stats variables
     has_drs = cs.getHasDRS()
+    has_ers = cs.getHasERS()
+    has_kers = cs.getHasKERS()
+    has_abs = cs.ABSLevel()
+    max_rpm = cs.getMaxRPM()
+    max_fuel = cs.getMaxFuel()
+
     car_count = si.getCarsCount()
 
     # TEST ZONE
     # ############
     ac.console(str(driver_name))
+    ac.console(str(has_drs))
+    ac.console(str(has_ers))
+    ac.console(str(has_kers))
+    ac.console(str(has_abs))
+    ac.console(str(max_rpm))
     ac.console("Car count: " + str(car_count))
+    ac.console(str(max_fuel))
     # #############
 
     display = ac.newApp("DGT")
@@ -50,29 +62,23 @@ def acMain(ac_version):
 
     # Display settings for testing
     # Increase the third variable of ac.setPosition() by 30 for every variable added
-    l_car_speed = ac.addLabel(display, "Speed: ()")
-    l_delta_ahead = ac.addLabel(display, "Delta to car ahead: ()")
-    l_delta_behind = ac.addLabel(display, "Delta to car behind: ()")
-    l_location = ac.addLabel(display, "Track relative position: ()")
-    l_world_location = ac.addLabel(display, "World precise position: ()")
-    l_session_status = ac.addLabel(display, "Session status: ()")
-    ac.setPosition(l_car_speed, 3, 30)
-    ac.setPosition(l_delta_ahead, 3, 60)
-    ac.setPosition(l_delta_behind, 3, 90)
-    ac.setPosition(l_location, 3, 120)
-    ac.setPosition(l_world_location, 3, 150)
-    ac.setPosition(l_session_status, 3, 180)
+    l_drag = ac.addLabel(display, "Drag: ()")
+    l_lift_front = ac.addLabel(display, "Lift front: ()")
+    l_lift_rear = ac.addLabel(display, "Lift rear: ()")
+    ac.setPosition(l_drag, 3, 30)
+    ac.setPosition(l_lift_front, 3, 60)
+    ac.setPosition(l_lift_rear, 3, 90)
 
     # Clear output files
-    with open('C:/Users/daana/OneDrive/Documenten/Assetto Corsa/logs/lap.txt', 'w') as f:
-        f.write("\n")
-    f.close()
-    with open('C:/Users/daana/OneDrive/Documenten/Assetto Corsa/logs/car.txt', 'w') as f:
-        f.write("\n")
-    f.close()
-    with open('C:/Users/daana/OneDrive/Documenten/Assetto Corsa/logs/input.txt', 'w') as f:
-        f.write("\n")
-    f.close()
+    # with open('C:/Users/daana/OneDrive/Documenten/Assetto Corsa/logs/lap.txt', 'w') as f:
+    #     f.write("\n")
+    # f.close()
+    # with open('C:/Users/daana/OneDrive/Documenten/Assetto Corsa/logs/car.txt', 'w') as f:
+    #     f.write("\n")
+    # f.close()
+    # with open('C:/Users/daana/OneDrive/Documenten/Assetto Corsa/logs/input.txt', 'w') as f:
+    #     f.write("\n")
+    # f.close()
 
 
 
@@ -82,15 +88,18 @@ def acMain(ac_version):
 def acUpdate(deltaT):
     global session_status
     # GLOBAL VARIABLES FOR LABELS ON THE DISPLAY
-    global l_car_speed, l_delta_ahead, l_delta_behind, l_location, l_world_location, l_session_status
+    global l_drag, l_lift_front, l_lift_rear
     # GLOBAL VARIABLES FOR TRACK CONDITIONS
     global wind_speed, wind_dir
     # GLOBAL VARIABLES FOR INPUT
-    global gas_input, brake_input, steer_input
+    global gas_input, brake_input, steer_input, clutch
     # GLOBAL VARIABLES FOR CAR INFO
-    global car_speed,  rpm, delta_ahead, delta_behind, location, world_location
+    global car_speed,  rpm, delta_ahead, delta_behind, location, world_location, gear, damage, fuel
     # GLOBAL VARIABLES FOR LAP TIMES
     global current_lap, last_lap, best_lap, splits, lap_count, is_invalid, split, track_pos
+    # GLOBAL VARIABLES FOR AERO
+    global drag, lift_front, lift_rear
+    # GLOBAL VARIABLES FOR TYRES
 
     ts = round(time.time() * 1000)
 
@@ -101,6 +110,7 @@ def acUpdate(deltaT):
     gas_input = ii.getGasInput(car_id)
     brake_input = ii.getBrakeInput(car_id)
     steer_input = ii.getSteerInput(car_id)
+    clutch = ii.getClutch(car_id)
 
     dInputInfo = {
         "flag": 0,
@@ -119,6 +129,11 @@ def acUpdate(deltaT):
     location = ci.getLocation(car_id)
     world_location = ci.getWorldLocation()
     is_in_pit = ci.getCarInPit()
+    gear = ci.getFormattedGear(car_id,True)
+    position = ci.getPosition(car_id)
+    drs_enabled = ci.getDRSEnabled()
+    damage = ci.getCarDamage("front")
+    fuel = ci.getFuel()
 
     dCarInfo = {
         "flag": 1,
@@ -147,30 +162,41 @@ def acUpdate(deltaT):
         "splits": splits,
         "invalid:": str(is_invalid)
     }
-    if session_status == 2 and not is_in_pit:
-        with open('C:/Users/daana/OneDrive/Documenten/Assetto Corsa/logs/TestData/lap.txt', 'a') as lap_file:
-            lap_file.write((str(dLapInfo)))
-            lap_file.write("\n")
-            lap_file.close()
-        with open('C:/Users/daana/OneDrive/Documenten/Assetto Corsa/logs/TestData/input.txt', 'a') as lap_file:
-            lap_file.write((str(dInputInfo)))
-            lap_file.write("\n")
-            lap_file.close()
-        with open('C:/Users/daana/OneDrive/Documenten/Assetto Corsa/logs/TestData/car.txt', 'a') as lap_file:
-            lap_file.write((str(dCarInfo)))
-            lap_file.write("\n")
-            lap_file.close()
 
-    # # Clear py.log to make sure it does not reach 2000 lines limit
-    # with open('C:/Users/daana/OneDrive/Documenten/Assetto Corsa/logs/py_log.txt', 'r+') as py_log:
-    #     py_log.truncate(124)
-    #     py_log.close()
+    # Aero functions called
+    drag = ai.getDrag()
+    lift_front = ai.getLiftFront()
+    lift_rear = ai.getLiftRear()
+
+    # Tyre functions called
+    tyrewear = ti.getTyreWearValue(0)
+    dirty = ti.getTyreDirtyLevel(0)
+    temp_inner = ti.getTyreTemperature(0, 'i')
+    tyre_pressure = ti.getTyrePressure(0)
+    brake_temp = ti.getBrakeTemperature(2)
+
+
+    # if session_status == 2 and not is_in_pit:
+    #     with open('C:/Users/daana/OneDrive/Documenten/Assetto Corsa/logs/TestData/lap.txt', 'a') as lap_file:
+    #         lap_file.write((str(dLapInfo)))
+    #         lap_file.write("\n")
+    #         lap_file.close()
+    #     with open('C:/Users/daana/OneDrive/Documenten/Assetto Corsa/logs/TestData/input.txt', 'a') as lap_file:
+    #         lap_file.write((str(dInputInfo)))
+    #         lap_file.write("\n")
+    #         lap_file.close()
+    #     with open('C:/Users/daana/OneDrive/Documenten/Assetto Corsa/logs/TestData/car.txt', 'a') as lap_file:
+    #         lap_file.write((str(dCarInfo)))
+    #         lap_file.write("\n")
+    #         lap_file.close()
 
     # Live display
-    ac.setText(l_car_speed, "Speed: {}".format(car_speed))
-    ac.setText(l_delta_ahead, "Delta to car ahead: {}".format(delta_ahead))
-    ac.setText(l_delta_behind, "Delta to car behind: {}".format(delta_behind))
-    ac.setText(l_location, "Track relative position: {}".format(location))
-    ac.setText(l_world_location, "World precise position: {}".format(world_location))
-    ac.setText(l_session_status, "Session status: {}".format(session_status))
+    ac.setText(l_drag, "Tyre pressure: {}".format(tyre_pressure))
+    ac.setText(l_lift_front, "Brake temp: {}".format(brake_temp))
+    ac.setText(l_lift_rear, "Temp: {}".format(temp_inner))
+
+    # TEST ZONE
+    # ############
+    ac.console(str(drag))
+    # #############
 
