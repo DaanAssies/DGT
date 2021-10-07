@@ -11,15 +11,13 @@ os.environ['PATH'] = os.environ['PATH'] + ";."
 from functions.shared_memory import info
 
 # METHODS IN THIS CLASS RETURN A SCALAR VECTOR
+# TODO: Figure out how to make this return not 0.0
 
-# TODO: TEST
 def getDrag(car=0):
     return ac.getCarState(car, acsys.CS.Aero, 0)
 
-# TODO: TEST
 def getLiftFront(car=0):
     return ac.getCarState(car, acsys.CS.Aero, 1)
 
-# TODO: TEST
 def getLiftRear(car=0):
     return ac.getCarState(car, acsys.CS.Aero, 2)
