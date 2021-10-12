@@ -1,10 +1,20 @@
+#################################################################################
+#   NOTES TO SELF:
+#   .csv ~ 3x more efficient in space:
+#   ~1min of logging: .csv = 123kb, .txt = 331kb
+#
+#
+#
+#
+#################################################################################
+
 import sys
 import ac
 import acsys
 import time
 import os
+import csv
 
-# try:
 import functions.aero_info as ai
 import functions.car_info as ci
 import functions.car_stats as cs
@@ -12,13 +22,13 @@ import functions.input_info as ii
 import functions.lap_info as li
 import functions.session_info as si
 import functions.tyre_info as ti
-# except:
-#     ac.console("ERROR IMPORTING")
 
 car_id = 0
+folder = "apps/python/DGT/outputs/"
 
 
 def acMain(ac_version):
+    global csvfile, writer
     # GLOBAL VARIABLES FOR LABELS ON THE DISPLAY
     global l_drag, l_lift_front, l_lift_rear
     # GLOBAL VARIABLES FOR SESSION DATA
@@ -69,23 +79,20 @@ def acMain(ac_version):
     ac.setPosition(l_lift_front, 3, 60)
     ac.setPosition(l_lift_rear, 3, 90)
 
-    # Clear output files
-    # with open('C:/Users/daana/OneDrive/Documenten/Assetto Corsa/logs/lap.txt', 'w') as f:
-    #     f.write("\n")
-    # f.close()
-    # with open('C:/Users/daana/OneDrive/Documenten/Assetto Corsa/logs/car.txt', 'w') as f:
-    #     f.write("\n")
-    # f.close()
-    # with open('C:/Users/daana/OneDrive/Documenten/Assetto Corsa/logs/input.txt', 'w') as f:
-    #     f.write("\n")
-    # f.close()
+    #Clear output
+    with open(folder + 'input.txt', 'w') as f:
+        f.write("\n")
 
-
+    csvfile = open(folder + 'input.csv', 'w', newline='')
+    input_fields = ['gas', 'brake', 'steer', 'timestamp']
+    writer = csv.writer(csvfile, delimiter=',', quotechar='"',
+                        quoting=csv.QUOTE_MINIMAL)
 
     return "DGT"
 
 
 def acUpdate(deltaT):
+    global writer
     global session_status
     # GLOBAL VARIABLES FOR LABELS ON THE DISPLAY
     global l_drag, l_lift_front, l_lift_rear
@@ -119,6 +126,10 @@ def acUpdate(deltaT):
         "steering": steer_input,
         "timestamp": ts
     }
+
+    writer.writerow([gas_input, brake_input, steer_input, ts])
+
+
 
     # Car info functions called
     car_speed = ci.getSpeed(car_id)
@@ -181,10 +192,10 @@ def acUpdate(deltaT):
     #         lap_file.write((str(dLapInfo)))
     #         lap_file.write("\n")
     #         lap_file.close()
-    #     with open('C:/Users/daana/OneDrive/Documenten/Assetto Corsa/logs/TestData/input.txt', 'a') as lap_file:
-    #         lap_file.write((str(dInputInfo)))
-    #         lap_file.write("\n")
-    #         lap_file.close()
+    with open(folder + "input.txt", 'a') as lap_file:
+        lap_file.write((str(dInputInfo)))
+        lap_file.write("\n")
+        lap_file.close()
     #     with open('C:/Users/daana/OneDrive/Documenten/Assetto Corsa/logs/TestData/car.txt', 'a') as lap_file:
     #         lap_file.write((str(dCarInfo)))
     #         lap_file.write("\n")
@@ -199,4 +210,9 @@ def acUpdate(deltaT):
     # ############
     ac.console(str(drag))
     # #############
+
+def acShutdown():
+    global csvfile
+
+    csvfile.close()
 
