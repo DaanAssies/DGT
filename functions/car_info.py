@@ -32,12 +32,12 @@ def getDeltaToCarAhead(formatted=False):
     time = 0
     dist = 0
     track_len = si.getTrackLength()
-    lap = li.getLapCount(0)
+    lap = li.get_lap_count(0)
     pos = getLocation(0)
 
     for car in range(si.getCarsCount()):
         if getPosition(car) == getPosition(0) - 1:
-            lap_next = li.getLapCount(car)
+            lap_next = li.get_lap_count(car)
             pos_next = getLocation(car)
 
             dist = max(0, (pos_next * track_len + lap_next * track_len) - (pos * track_len + lap * track_len))
@@ -64,11 +64,11 @@ def getDeltaToCarBehind(formatted=False):
     time = 0
     dist = 0
     track_len = si.getTrackLength()
-    lap = li.getLapCount(0)
+    lap = li.get_lap_count(0)
     pos = getLocation(0)
     for car in range(si.getCarsCount()):
         if getPosition(car) == getPosition(0) + 1:
-            lap_next = li.getLapCount(car)
+            lap_next = li.get_lap_count(car)
             pos_next = getLocation(car)
 
             dist = max(0, (pos * track_len + lap * track_len) - (pos_next * track_len + lap_next * track_len))
