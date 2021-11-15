@@ -2,6 +2,7 @@ import os
 import sys
 import ac
 import acsys
+from typing import Union
 
 sysdir = os.path.dirname(__file__) + '/../stdlib64'
 sys.path.insert(0, sysdir)
@@ -10,7 +11,13 @@ os.environ['PATH'] = os.environ['PATH'] + ";."
 
 from functions.shared_memory import info
 
-def formatTime(millis):
+
+def format_time(millis: int) -> str:
+    """
+    Formats the time from timestamp to readable time
+    :param millis: timestamp in milliseconds
+    :return: formatted string in format mm:ss:ms
+    """
     m = int(millis / 60000)
     s = int((millis % 60000) / 1000)
     ms = millis % 1000
@@ -18,7 +25,13 @@ def formatTime(millis):
     return "{:02d}:{:02d}.{:03d}".format(m, s, ms)
 
 
-def getSpeed(car=0, unit="kmh"):
+def get_speed(car: int = 0, unit: str = "kmh") -> float:
+    """
+    Retrieve the current speed of a car
+    :param car: the car selected (user is 0)
+    :param unit: either kmh or mph or ms on how to show speed
+    :return: current speed [0, ...]
+    """
     if unit == "kmh":
         return ac.getCarState(car, acsys.CS.SpeedKMH)
     elif unit == "mph":
@@ -26,22 +39,28 @@ def getSpeed(car=0, unit="kmh"):
     elif unit == "ms":
         return ac.getCarState(car, acsys.CS.SpeedMS)
 
-def getDeltaToCarAhead(formatted=False):
+
+def get_delta_to_car_ahead(formatted: bool = False) -> Union[float, str]:
+    """
+    Retrieve time delta to the car ahead
+    :param formatted: true if format should be in readable str
+    :return: delta to car ahead in calculated time distance (float) or string format
+    """
     import functions.session_info as si
     import functions.lap_info as li
     time = 0
     dist = 0
-    track_len = si.getTrackLength()
+    track_len = si.get_track_length()
     lap = li.get_lap_count(0)
-    pos = getLocation(0)
+    pos = get_location(0)
 
-    for car in range(si.getCarsCount()):
-        if getPosition(car) == getPosition(0) - 1:
+    for car in range(si.get_cars_count()):
+        if get_position(car) == get_position(0) - 1:
             lap_next = li.get_lap_count(car)
-            pos_next = getLocation(car)
+            pos_next = get_location(car)
 
             dist = max(0, (pos_next * track_len + lap_next * track_len) - (pos * track_len + lap * track_len))
-            time = max(0.0, dist / max(10.0, getSpeed(0, "ms")))
+            time = max(0.0, dist / max(10.0, get_speed(0, "ms")))
             break
 
     if not formatted:
@@ -54,25 +73,31 @@ def getDeltaToCarAhead(formatted=False):
             else:
                 return "+{:3.1f}".format(laps) + " Lap"
         elif time > 60:
-            return "+" + formatTime(int(time * 1000))
+            return "+" + format_time(int(time * 1000))
         else:
             return "+{:3.3f}".format(time)
 
-def getDeltaToCarBehind(formatted=False):
+
+def get_delta_to_car_behind(formatted: bool = False) -> Union[float, str]:
+    """
+    Retrieve time delta to the car behind
+    :param formatted: true if format should be in readable str
+    :return: delta to car behind in calculated time distance (float) or string format
+    """
     import functions.session_info as si
     import functions.lap_info as li
     time = 0
     dist = 0
-    track_len = si.getTrackLength()
+    track_len = si.get_track_length()
     lap = li.get_lap_count(0)
-    pos = getLocation(0)
-    for car in range(si.getCarsCount()):
-        if getPosition(car) == getPosition(0) + 1:
+    pos = get_location(0)
+    for car in range(si.get_cars_count()):
+        if get_position(car) == get_position(0) + 1:
             lap_next = li.get_lap_count(car)
-            pos_next = getLocation(car)
+            pos_next = get_location(car)
 
             dist = max(0, (pos * track_len + lap * track_len) - (pos_next * track_len + lap_next * track_len))
-            time = max(0.0, dist / max(10.0, getSpeed(car, "ms")))
+            time = max(0.0, dist / max(10.0, get_speed(car, "ms")))
             break
 
     if not formatted:
@@ -85,28 +110,53 @@ def getDeltaToCarBehind(formatted=False):
             else:
                 return "-{:3.1f}".format(laps) + " Lap"
         elif time > 60:
-            return "-" + formatTime(int(time * 1000))
+            return "-" + format_time(int(time * 1000))
         else:
             return "-{:3.3f}".format(time)
 
-# Gets the position of the car on track. 0 is the start/finish line [0,1]
-def getLocation(car=0):
+
+def get_location(car: int = 0) -> float:
+    """
+    Retrieve current location of a car
+    :param car: the car selected (user is 0)
+    :return: position on track relative with the lap between 0 and 1
+    """
     return ac.getCarState(car, acsys.CS.NormalizedSplinePosition)
 
-# Gets the location of the car in [x,y,z] coordinates, x=0,z=0 is middle
-def getWorldLocation(car=0):
+
+def get_world_location(car: int = 0) -> [float, float, float]:
+    """
+    Retrieve absolute location of a car
+    :param car: the car selected (user is 0)
+    :return: absolute location [x,y,z] ((0,x,0) is the middle)
+    """
     return ac.getCarState(car, acsys.CS.WorldPosition)
 
-# Leading car is in position 0
-def getPosition(car):
+
+def get_position(car: int = 0) -> int:
+    """
+    Retrieve current driving position of a car
+    :param car: the car selected (user is 0)
+    :return: position of car (0 is the lead car)
+    """
     return ac.getCarRealTimeLeaderboardPosition(car) + 1
 
 # 0 if disabled, 1 if enabled
-def getDRSEnabled():
+def get_drs_enabled() -> bool:
+    """
+    Check whether DRS of the car of the player is enabled
+    :return: DRS enabled
+    """
     return info.physics.drsEnabled
 
 # Formatted: 0=R, 1=N, 2=1, 3=2, 4=3, 5=4, 6=5, 7=6, 8=7, etc.
-def getFormattedGear(car=0, formatted=True):
+def get_gear(car: int = 0, formatted: bool = True) -> Union[int, str]:
+    """
+    Retrieve current gear of a car. if Formatted, it returns string, if not, it returns int. 0=R, 1=N, 2=1, 3=2, etc.
+    :param car: the car selected (user is 0)
+    :param formatted: boolean to format result or not.
+    :return: current gear of car as integer or string format
+    """
     gear = ac.getCarState(car, acsys.CS.Gear)
     if formatted:
         if gear == 0:
@@ -118,24 +168,46 @@ def getFormattedGear(car=0, formatted=True):
     else:
         return gear
 
-def getRPM(car=0):
+def get_rpm(car: int = 0) -> float:
+    """
+    Retrieve rpm of a car
+    :param car: the car selected (user is 0)
+    :return: rpm of a car [0, ...]
+    """
     return ac.getCarState(car, acsys.CS.RPM)
 
-# Amount of fuel in the car in KGs
-def getFuel():
+
+def get_fuel() -> float:
+    """
+    Retrieve amount of fuel in player's car in kg
+    :return: amount of fuel [0, ...]
+    """
     return info.physics.fuel
 
 # Returns the amount of tyres off-track
 
-def getTyresOut():
+def get_tyres_off_track() -> int:
+    """
+    Retrieve amount of tyres of player's car off-track
+    :return: amount of tyres off-track [0,4]
+    """
     return info.physics.numberOfTyresOut
 
-def getCarInPit():
+def get_car_in_pit_lane() -> bool:
+    """
+    Retrieve whether player's car is in the pitlane
+    :return: car in pit lane
+    """
     return info.graphics.isInPitLane
 
 
 # Damage numbers go up to a high number. A slight tap results in a damage value of about 10
-def getCarDamage(loc="front"):
+def get_car_damage(loc: str = "front") -> float:
+    """
+    Retrieve car damage per side
+    :param loc: front, rear, left or right
+    :return: damage [0, ...]
+    """
     if loc == "front":
         return info.physics.carDamage[0]
     elif loc == "rear":

@@ -3,6 +3,7 @@ import sys
 import ac
 import acsys
 from functions.shared_memory import info
+from typing import Union
 
 sysdir = os.path.dirname(__file__) + '/../stdlib64'
 sys.path.insert(0, sysdir)
@@ -23,7 +24,7 @@ def format_time(millis: int) -> str:
     return "{:02d}:{:02d}.{:03d}".format(m, s, ms)
 
 
-def get_current_lap_time(car: int = 0, formatted: bool = False) -> int:
+def get_current_lap_time(car: int = 0, formatted: bool = False) -> Union[int, str]:
     """
     Retrieves the current lap time of the car selected
     :param car: the car selected (user is 0)
@@ -40,7 +41,7 @@ def get_current_lap_time(car: int = 0, formatted: bool = False) -> int:
         return ac.getCarState(car, acsys.CS.LapTime)
 
 
-def get_last_lap_time(car: int = 0, formatted: bool = False) -> int:
+def get_last_lap_time(car: int = 0, formatted: bool = False) -> Union[int, str]:
     """
     Retrieves the last lap time of the car selected
     :param car: the car selected (user is 0)
@@ -57,7 +58,7 @@ def get_last_lap_time(car: int = 0, formatted: bool = False) -> int:
         return ac.getCarState(car, acsys.CS.LastLap)
 
 
-def get_best_lap_time(car: int = 0, formatted: bool = False) -> int:
+def get_best_lap_time(car: int = 0, formatted: bool = False) -> Union[int, str]:
     """
     Retrieve the best lap time recorded, does not save if invalidated lap
     :param car: the car selected (user is 0)
@@ -74,7 +75,7 @@ def get_best_lap_time(car: int = 0, formatted: bool = False) -> int:
         return ac.getCarState(car, acsys.CS.BestLap)
 
 
-def get_splits(car: int = 0, formatted: bool = False) -> list:
+def get_splits(car: int = 0, formatted: bool = False) -> Union[list, str]:
     """
     Retrieve the split times of the completed lap
     :param car: the car selected (user is 0)
@@ -111,7 +112,7 @@ def get_invalid(car: int = 0) -> bool:
     """
     import functions.car_info as ci
 
-    return ac.getCarState(car, acsys.CS.LapInvalidated) or ci.getTyresOut() > 2
+    return ac.getCarState(car, acsys.CS.LapInvalidated) or ci.get_tyres_off_track() > 2
 
 
 def get_lap_count(car: int = 0) -> int:

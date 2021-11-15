@@ -12,7 +12,7 @@ os.environ['PATH'] = os.environ['PATH'] + ";."
 def get_gas_input(car: int = 0) -> float:
     """
     Retrieve the gas input given to a car
-    :param car: car in the game (0 is user)
+    :param car: the car selected (user is 0)
     :return: gas input between 0 and 1
     """
     return ac.getCarState(car, acsys.CS.Gas)
@@ -21,7 +21,7 @@ def get_gas_input(car: int = 0) -> float:
 def get_brake_input(car: int = 0) -> float:
     """
     Retrieve the brake input given to a car
-    :param car: car in the game (0 is user)
+    :param car: the car selected (user is 0)
     :return: brake input between 0 and 1
     """
     return ac.getCarState(car, acsys.CS.Brake)
@@ -30,7 +30,7 @@ def get_brake_input(car: int = 0) -> float:
 def get_clutch(car: int = 0) -> float:
     """
     Retrieve the clutch status in the game of a car
-    :param car: car in the game (0 is user)
+    :param car: the car selected (user is 0)
     :return: deployment of the clutch (1 is fully deployed, 0 is not deployed).
     """
     return ac.getCarState(car, acsys.CS.Clutch)
@@ -39,7 +39,7 @@ def get_clutch(car: int = 0) -> float:
 def get_steer_input(car: int = 0) -> float:
     """
     Retrieve the steering input given to a car
-    :param car: car in the game (0 is user)
+    :param car: the car selected (user is 0)
     :return: steering input to the car, depends on the settings in AC, in degrees
     """
     return ac.getCarState(car, acsys.CS.Steer)

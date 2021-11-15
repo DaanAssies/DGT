@@ -1,12 +1,8 @@
-#################################################################################
-#   NOTES TO SELF:
-#   .csv ~ 3x more efficient in space:
-#   ~1min of logging: .csv = 123kb, .txt = 331kb
-#
-#
-#
-#
-#################################################################################
+"""
+NOTES TO SELF:
+.csv ~ 3x more efficient in space:
+~1min of logging: .csv = 123kb, .txt = 331kb
+"""
 
 import sys
 import ac
@@ -39,21 +35,21 @@ def acMain(ac_version):
     global has_drs, has_ers, has_kers, has_abs, max_rpm
 
     # Set the session variables
-    driver_name = si.getDriverName(car_id)
-    car_name = si.getCarName(car_id)
-    track_name = si.getTrackName()
-    track_config = si.getTrackConfig()
-    track_length = si.getTrackLength()
-    session_type = si.getSessionType()
+    driver_name = si.get_driver_name(car_id)
+    car_name = si.get_car_name(car_id)
+    track_name = si.get_track_name()
+    track_config = si.get_track_config()
+    track_length = si.get_track_length()
+    session_type = si.get_session_type()
     # Set the car stats variables
-    has_drs = cs.getHasDRS()
-    has_ers = cs.getHasERS()
-    has_kers = cs.getHasKERS()
-    has_abs = cs.ABSLevel()
-    max_rpm = cs.getMaxRPM()
-    max_fuel = cs.getMaxFuel()
+    has_drs = cs.get_has_drs()
+    has_ers = cs.get_has_ers()
+    has_kers = cs.get_has_kers()
+    has_abs = cs.abs_level()
+    max_rpm = cs.get_max_rpm()
+    max_fuel = cs.get_max_fuel()
 
-    car_count = si.getCarsCount()
+    car_count = si.get_cars_count()
 
     # TEST ZONE
     # ############
@@ -110,14 +106,14 @@ def acUpdate(deltaT):
 
     ts = round(time.time() * 1000)
 
-    session_status = si.getSessionStatus()
+    session_status = si.get_session_status()
     # ac.console(str(session_status))
 
     # Input info functions called
-    gas_input = ii.getGasInput(car_id)
-    brake_input = ii.getBrakeInput(car_id)
-    steer_input = ii.getSteerInput(car_id)
-    clutch = ii.getClutch(car_id)
+    gas_input = ii.get_gas_input(car_id)
+    brake_input = ii.get_brake_input(car_id)
+    steer_input = ii.get_steer_input(car_id)
+    clutch = ii.get_clutch(car_id)
 
     dInputInfo = {
         "flag": 0,
@@ -132,19 +128,19 @@ def acUpdate(deltaT):
 
 
     # Car info functions called
-    car_speed = ci.getSpeed(car_id)
+    car_speed = ci.get_speed(car_id)
     # ac.console(car_speed)
-    rpm = ci.getRPM(car_id)
-    delta_ahead = ci.getDeltaToCarAhead(True)
-    delta_behind = ci.getDeltaToCarBehind(True)
-    location = ci.getLocation(car_id)
-    world_location = ci.getWorldLocation()
-    is_in_pit = ci.getCarInPit()
-    gear = ci.getFormattedGear(car_id,True)
-    position = ci.getPosition(car_id)
-    drs_enabled = ci.getDRSEnabled()
-    damage = ci.getCarDamage("front")
-    fuel = ci.getFuel()
+    rpm = ci.get_rpm(car_id)
+    delta_ahead = ci.get_delta_to_car_ahead(True)
+    delta_behind = ci.get_delta_to_car_behind(True)
+    location = ci.get_location(car_id)
+    world_location = ci.get_world_location()
+    is_in_pit = ci.get_car_in_pit_lane()
+    gear = ci.get_gear(car_id, True)
+    position = ci.get_position(car_id)
+    drs_enabled = ci.get_drs_enabled()
+    damage = ci.get_car_damage("front")
+    fuel = ci.get_fuel()
 
     dCarInfo = {
         "flag": 1,
@@ -161,7 +157,7 @@ def acUpdate(deltaT):
     lap_delta = li.getLapDelta(car_id)
     is_invalid = li.getInvalid(car_id)
     split = li.getSplit()
-    lap_pos = ci.getLocation(car_id)
+    lap_pos = ci.get_location(car_id)
 
     dLapInfo = {
         "lap_position": lap_pos,
@@ -180,11 +176,11 @@ def acUpdate(deltaT):
     lift_rear = ai.getLiftRear()
 
     # Tyre functions called
-    tyrewear = ti.getTyreWearValue(0)
-    dirty = ti.getTyreDirtyLevel(0)
-    temp_inner = ti.getTyreTemperature(0, 'i')
-    tyre_pressure = ti.getTyrePressure(0)
-    brake_temp = ti.getBrakeTemperature(2)
+    tyrewear = ti.get_tyre_wear_value(0)
+    dirty = ti.get_tyre_dirty(0)
+    temp_inner = ti.get_tyre_temp(0, 'i')
+    tyre_pressure = ti.get_tyre_pressure(0)
+    brake_temp = ti.get_brake_temp(2)
 
 
     # if session_status == 2 and not is_in_pit:
