@@ -1,6 +1,6 @@
-# import functions.tyre_info
-# import functions.input_info
-# import functions.session_info
+import functions.tyre_info
+import functions.input_info
+import functions.session_info
 # import functions.lap_info
 # import functions.car_info
 # import functions.car_stats
@@ -9,7 +9,6 @@ from datetime import datetime
 
 import numpy as np
 
-import functions.tyre_info
 
 
 class DataCollector:
@@ -55,7 +54,7 @@ class DataCollector:
             print("Capture aero info")
 
     @staticmethod
-    def capture_tyre_info() -> np.array:
+    def capture_tyre_info():
         tyre_wear_fl = functions.tyre_info.get_tyre_wear_value(0)
         tyre_wear_fr = functions.tyre_info.get_tyre_wear_value(1)
         tyre_wear_rl = functions.tyre_info.get_tyre_wear_value(2)
@@ -139,6 +138,45 @@ class DataCollector:
                                brake_temperature_array)
 
         return tyre_array
+    
+    @staticmethod
+    def capture_input_info():
+        gas_input = functions.input_info.get_gas_input()
+        brake_input = functions.input_info.get_brake_input()
+        clutch_input = functions.input_info.get_clutch()
+        steer_input = functions.input_info.get_steer_input()
+
+        input_array = np.array([('Gas Input', gas_input), ('Brake Input', brake_input), ('Clutch Input', clutch_input),
+                                ('Steer Input', steer_input)], dtype=[('Variable name', 'string'), ('value', 'float')])
+
+        return input_array
+
+    @staticmethod
+    def capture_session_info():
+        session_type = functions.session_info.get_session_type()
+        driver_name = functions.session_info.get_driver_name()
+        car_name = functions.session_info.get_car_name()
+        track_name = functions.session_info.get_track_name()
+        track_config = functions.session_info.get_track_config()
+        track_length = functions.session_info.get_track_length()
+        cars_count = functions.session_info.get_cars_count()
+        session_status = functions.session_info.get_session_status()
+
+    @staticmethod
+    def capture_lap_info():
+        print("Lap information")
+
+    @staticmethod
+    def capture_car_info():
+        print("car information")
+
+    @staticmethod
+    def capture_car_stats():
+        print("Car stats")
+
+    @staticmethod
+    def capture_aero_info():
+        print("Aero info")
 
 
 test = DataCollector()
