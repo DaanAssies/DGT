@@ -9,6 +9,7 @@ from datetime import datetime
 
 import numpy as np
 
+global collection_array
 
 class DataCollector:
     def __init__(self):
@@ -31,26 +32,37 @@ class DataCollector:
     def capture_data(self):
         current_timestamp = datetime.now()
 
+        date_array = np.array([current_timestamp], dtype=([('Timestamp', 'datetime')]))
+        collection_array.hstack(date_array)
+
         if self._capture_tyre_info:
             tyre_array = self.capture_tyre_info()
+            collection_array.hstack(tyre_array)
 
         if self._capture_input_info:
             input_array = self.capture_input_info()
+            collection_array.hstack(input_array)
 
         if self._capture_session_info:
             session_array = self.capture_session_info()
+            collection_array.hstack(session_array)
 
         if self._capture_lap_info:
-            print("Capture lap info here")
+            lap_array = self.capture_lap_info()
+            collection_array.hstack(lap_array)
 
         if self._capture_car_info:
-            print("Capture car info")
+            car_array = self.capture_car_info()
+            collection_array.hstack(car_array)
 
         if self._capture_car_stats:
             car_stats_array = self.capture_car_stats()
+            collection_array.hstack(car_stats_array)
 
         if self._capture_aero_info:
             print("placeholder, aero data currently bugged")
+
+        return collection_array
 
     @staticmethod
     def capture_tyre_info():
@@ -180,11 +192,108 @@ class DataCollector:
 
     @staticmethod
     def capture_lap_info():
-        print("Lap information")
+        current_lap_time_ms = functions.lap_info.get_current_lap_time()
+        current_lap_time_str = functions.lap_info.get_current_lap_time(formatted=True)
+
+        last_lap_time_ms = functions.lap_info.get_last_lap_time()
+        last_lap_time_str = functions.lap_info.get_last_lap_time(formatted=True)
+
+        best_lap_time_ms = functions.lap_info.get_best_lap_time()
+        best_lap_time_str = functions.lap_info.get_best_lap_time(formatted=True)
+
+        splits_ms = functions.lap_info.get_splits()
+        splits_str = functions.lap_info.get_splits(formatted=True)
+
+        last_sector = functions.lap_info.get_split()
+
+        invalid_lap = functions.lap_info.get_invalid()
+
+        lap_count = functions.lap_info.get_lap_count()
+
+        race_laps = functions.lap_info.get_laps()
+
+        lap_delta = functions.lap_info.get_lap_delta()
+
+        lap_info_array = np.array([(current_lap_time_ms, current_lap_time_str, last_lap_time_ms, last_lap_time_str,
+                                    best_lap_time_ms, best_lap_time_str, splits_ms, splits_str, last_sector,
+                                    invalid_lap, lap_count, race_laps, lap_delta)],
+                                  dtype=[('Current Lap Time milliseconds', 'int'), ('Current Lap Time', 'string'),
+                                         ('Last Lap Time milliseconds', 'int'), ('Last Lap Time', 'string'),
+                                         ('Best Lap Time milliseconds', 'int'), ('Best Lap Time', 'string'),
+                                         ('Splits milliseconds', 'list'), ('Splits', 'list'),
+                                         ('Last Sector', 'string'), ('Invalid Lap', 'bool'),
+                                         ('Lap Count', 'int'), ('Race Laps', 'string'),
+                                         ('Lap Delta', 'float')])
+
+        return lap_info_array
 
     @staticmethod
     def capture_car_info():
-        print("car information")
+        current_speed_kmh = functions.car_info.get_speed()
+        current_speed_mph = functions.car_info.get_speed(unit="mph")
+        current_speed_ms = functions.car_info.get_speed(unit="ms")
+
+        delta_car_ahead_notformat = functions.car_info.get_delta_to_car_ahead()
+        delta_car_ahead_str = functions.car_info.get_delta_to_car_ahead(formatted=True)
+
+        delta_car_behind_notformat = functions.car_info.get_delta_to_car_behind()
+        delta_car_behind_str = functions.car_info.get_delta_to_car_behind(formatted=True)
+
+        location_car = functions.car_info.get_location()
+
+        world_location = functions.car_info.get_world_location()
+
+        position = functions.car_info.get_position()
+
+        drs_enabled = functions.car_info.get_drs_enabled()
+
+        current_gear_int = functions.car_info.get_gear()
+        current_gear_string = functions.car_info.get_gear(formatted=True)
+
+        current_rpm = functions.car_info.get_rpm()
+
+        current_fuel = functions.car_info.get_fuel()
+
+        amount_of_tyres_off_track = functions.car_info.get_tyres_off_track()
+
+        car_in_pitlane = functions.car_info.get_car_in_pit_lane()
+
+        car_damage_front = functions.car_info.get_car_damage()
+        car_damage_rear = functions.car_info.get_car_damage("rear")
+        car_damage_left = functions.car_info.get_car_damage("left")
+        car_damage_right = functions.car_info.get_car_damage("right")
+        car_damage_centre = functions.car_info.get_car_damage("centre")
+
+        car_info_array = np.array([(current_speed_kmh, current_speed_mph, current_speed_ms, delta_car_ahead_notformat,
+                                    delta_car_ahead_str, delta_car_behind_notformat, delta_car_behind_str,
+                                    location_car, world_location, position, drs_enabled, current_gear_int,
+                                    current_gear_string, current_rpm, current_fuel, amount_of_tyres_off_track,
+                                    car_in_pitlane, car_damage_front, car_damage_rear, car_damage_left,
+                                    car_damage_right, car_damage_centre)], dtype=[('Current Speed KMH', 'float'),
+                                                                                  ('Current Speed MPH', 'float'),
+                                                                                  ('Current Speed MS', 'float'),
+                                                                                  ('Delta Car Ahead', 'float'),
+                                                                                  ('Delta Car Ahead Format', 'string'),
+                                                                                  ('Delta Car Behind', 'float'),
+                                                                                  ('Delta Car Behind Format', 'string'),
+                                                                                  ('Car Location', 'float'),
+                                                                                  ('World Location', 'list'),
+                                                                                  ('Position', 'int'),
+                                                                                  ('DRS Enabled', 'bool'),
+                                                                                  ('Get Current Gear', 'int'),
+                                                                                  ('Get Current Gear Formatted'
+                                                                                   , 'string'),
+                                                                                  ('Current RPM', 'float'),
+                                                                                  ('Current Fuel', 'float'),
+                                                                                  ('Amount of tyres off track', 'int'),
+                                                                                  ('Car in Pitlane', 'bool'),
+                                                                                  ('Car Damage Front', 'float'),
+                                                                                  ('Car Damage Rear', 'float'),
+                                                                                  ('Car Damage Left', 'float'),
+                                                                                  ('Car Damage Right', 'float'),
+                                                                                  ('Car Damage Centre', 'float')])
+
+        return car_info_array
 
     @staticmethod
     def capture_car_stats():

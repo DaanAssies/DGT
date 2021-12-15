@@ -10,6 +10,7 @@ import acsys
 import time
 import os
 import csv
+import numpy as np
 
 import functions.aero_info as ai
 import functions.car_info as ci
@@ -18,6 +19,7 @@ import functions.input_info as ii
 import functions.lap_info as li
 import functions.session_info as si
 import functions.tyre_info as ti
+import data_gathering.store_data
 
 car_id = 0
 folder = "apps/python/DGT/outputs/"
@@ -33,6 +35,8 @@ def acMain(ac_version):
     global is_invalid
     # GLOBAL VARIABLES FOR CAR STATISTICS
     global has_drs, has_ers, has_kers, has_abs, max_rpm
+
+    global collection_array, data_collector
 
     # Set the session variables
     driver_name = si.get_driver_name(car_id)
@@ -75,14 +79,20 @@ def acMain(ac_version):
     ac.setPosition(l_lift_front, 3, 60)
     ac.setPosition(l_lift_rear, 3, 90)
 
-    #Clear output
-    with open(folder + 'input.txt', 'w') as f:
-        f.write("\n")
+    #Here below, we start the data_constructor
 
-    csvfile = open(folder + 'input.csv', 'w', newline='')
-    input_fields = ['gas', 'brake', 'steer', 'timestamp']
-    writer = csv.writer(csvfile, delimiter=',', quotechar='"',
-                        quoting=csv.QUOTE_MINIMAL)
+    data_collector = data_gathering.store_data.DataCollector()
+    collection_array.np.array()
+
+
+    #Clear output
+    # with open(folder + 'input.txt', 'w') as f:
+    #     f.write("\n")
+    #
+    # csvfile = open(folder + 'input.csv', 'w', newline='')
+    # input_fields = ['gas', 'brake', 'steer', 'timestamp']
+    # writer = csv.writer(csvfile, delimiter=',', quotechar='"',
+    #                     quoting=csv.QUOTE_MINIMAL)
 
     return "DGT"
 
@@ -207,8 +217,12 @@ def acUpdate(deltaT):
     ac.console(str(drag))
     # #############
 
+    collected_array = data_collector.capture_data()
+    collection_array.vstack(collected_array)
+
 def acShutdown():
     global csvfile
 
+    np.save('./test.npy', collection_array)
     csvfile.close()
 
