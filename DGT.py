@@ -8,12 +8,8 @@
 #
 #################################################################################
 
-import sys
 import ac
-import acsys
 import time
-import os
-import csv
 
 import functions.aero_info as ai
 import functions.car_info as ci
@@ -22,6 +18,11 @@ import functions.input_info as ii
 import functions.lap_info as li
 import functions.session_info as si
 import functions.tyre_info as ti
+import dataGathering.store_csv as store
+import os
+
+dirname = os.path.dirname(__file__)
+outputs = os.path.abspath(os.path.join(dirname, "outputs"))
 
 car_id = 0
 folder = "apps/python/DGT/outputs/"
@@ -79,14 +80,13 @@ def acMain(ac_version):
     ac.setPosition(l_lift_front, 3, 60)
     ac.setPosition(l_lift_rear, 3, 90)
 
-    #Clear output
-    with open(folder + 'input.txt', 'w') as f:
-        f.write("\n")
+    #Remove output files
+    for file in os.listdir(outputs):
+        ac.console(file)
+        if os.path.exists(outputs + "file"):
+            os.remove(file)
 
-    csvfile = open(folder + 'input.csv', 'w', newline='')
-    input_fields = ['gas', 'brake', 'steer', 'timestamp']
-    writer = csv.writer(csvfile, delimiter=',', quotechar='"',
-                        quoting=csv.QUOTE_MINIMAL)
+    store.init()
 
     return "DGT"
 
@@ -127,13 +127,11 @@ def acUpdate(deltaT):
         "timestamp": ts
     }
 
-    writer.writerow([gas_input, brake_input, steer_input, ts])
-
+    store.inputWriter.writerow([gas_input, brake_input, steer_input, ts])
 
 
     # Car info functions called
     car_speed = ci.getSpeed(car_id)
-    # ac.console(car_speed)
     rpm = ci.getRPM(car_id)
     delta_ahead = ci.getDeltaToCarAhead(True)
     delta_behind = ci.getDeltaToCarBehind(True)
@@ -151,6 +149,8 @@ def acUpdate(deltaT):
         "timestamp": ts,
         "car_speed": car_speed,
         "rpm": rpm}
+
+    store.carWriter.writerow([car_speed, rpm, gear, ts])
 
     # Lap info functions called
     current_lap = li.getCurrentLapTime(car_id)
@@ -174,6 +174,8 @@ def acUpdate(deltaT):
         "invalid:": str(is_invalid)
     }
 
+    store.lapWriter.writerow([lap_pos, lap_count, current_lap, last_lap, best_lap, lap_delta, splits, str(is_invalid), ts])
+
     # Aero functions called
     drag = ai.getDrag()
     lift_front = ai.getLiftFront()
@@ -192,10 +194,10 @@ def acUpdate(deltaT):
     #         lap_file.write((str(dLapInfo)))
     #         lap_file.write("\n")
     #         lap_file.close()
-    with open(folder + "input.txt", 'a') as lap_file:
-        lap_file.write((str(dInputInfo)))
-        lap_file.write("\n")
-        lap_file.close()
+    # with open(folder + "input.txt", 'a') as lap_file:
+    #     lap_file.write((str(dInputInfo)))
+    #     lap_file.write("\n")
+    #     lap_file.close()
     #     with open('C:/Users/daana/OneDrive/Documenten/Assetto Corsa/logs/TestData/car.txt', 'a') as lap_file:
     #         lap_file.write((str(dCarInfo)))
     #         lap_file.write("\n")
@@ -206,13 +208,5 @@ def acUpdate(deltaT):
     ac.setText(l_lift_front, "Brake temp: {}".format(brake_temp))
     ac.setText(l_lift_rear, "Temp: {}".format(temp_inner))
 
-    # TEST ZONE
-    # ############
-    ac.console(str(drag))
-    # #############
-
 def acShutdown():
-    global csvfile
-
-    csvfile.close()
-
+    return
