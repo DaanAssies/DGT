@@ -3,12 +3,11 @@ import csv
 import time
 
 dirname = os.path.dirname(__file__)
-# file_input = os.path.abspath(os.path.join(dirname, "..", "outputs\input.csv"))
 
 def init():
     cur_time = str(round(time.time()))
-    os.makedirs(os.path.abspath(os.path.join(dirname, cur_time)))
     output_dir = os.path.abspath(os.path.join(dirname, cur_time))
+    os.makedirs(output_dir)
 
     global inputWriter
 
@@ -31,5 +30,5 @@ def init():
     csvfile = open(os.path.abspath(os.path.join(output_dir, "lap.csv")), 'w', newline='')
     lapWriter = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
-    header = ['lap position', 'lap count', 'current lap', 'last lap', 'best lap', 'lap delta', 'splits', 'invalid', 'timestamp']
+    header = ['lap position', 'lap count', 'current lap', 'last lap', 'best lap', 'lap delta', 'split1', 'split2', 'split3', 'invalid', 'timestamp']
     lapWriter.writerow(header)
