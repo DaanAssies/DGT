@@ -1,13 +1,18 @@
 import os
 import csv
+import time
 
 dirname = os.path.dirname(__file__)
 # file_input = os.path.abspath(os.path.join(dirname, "..", "outputs\input.csv"))
 
 def init():
+    cur_time = str(round(time.time()))
+    os.makedirs(os.path.abspath(os.path.join(dirname, cur_time)))
+    output_dir = os.path.abspath(os.path.join(dirname, cur_time))
+
     global inputWriter
 
-    csvfile = open(os.path.abspath(os.path.join(dirname, "..", "outputs\input.csv")), 'w', newline='')
+    csvfile = open(os.path.abspath(os.path.join(output_dir, "input.csv")), 'w', newline='')
     inputWriter = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
     header = ['gas', 'brake', 'steer', 'timestamp']
@@ -15,7 +20,7 @@ def init():
 
     global carWriter
 
-    csvfile = open(os.path.abspath(os.path.join(dirname, "..", "outputs\car.csv")), 'w', newline='')
+    csvfile = open(os.path.abspath(os.path.join(output_dir, "car.csv")), 'w', newline='')
     carWriter = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
     header = ['speed', 'rpm', 'gear', 'timestamp']
@@ -23,7 +28,7 @@ def init():
 
     global lapWriter
 
-    csvfile = open(os.path.abspath(os.path.join(dirname, "..", "outputs\lap.csv")), 'w', newline='')
+    csvfile = open(os.path.abspath(os.path.join(output_dir, "lap.csv")), 'w', newline='')
     lapWriter = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
     header = ['lap position', 'lap count', 'current lap', 'last lap', 'best lap', 'lap delta', 'splits', 'invalid', 'timestamp']

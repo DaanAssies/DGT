@@ -80,12 +80,6 @@ def acMain(ac_version):
     ac.setPosition(l_lift_front, 3, 60)
     ac.setPosition(l_lift_rear, 3, 90)
 
-    #Remove output files
-    for file in os.listdir(outputs):
-        ac.console(file)
-        if os.path.exists(outputs + "file"):
-            os.remove(file)
-
     store.init()
 
     return "DGT"
