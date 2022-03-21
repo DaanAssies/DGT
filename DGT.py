@@ -148,27 +148,30 @@ def acUpdate(deltaT):
 
     # Lap info functions called
     current_lap = li.getCurrentLapTime(car_id)
-    last_lap = li.getLastLapTime(car_id, True)
-    best_lap = li.getBestLapTime(car_id, True)
-    splits = li.getSplits(car_id, True)
+    last_lap = li.getLastLapTime(car_id)
+    best_lap = li.getBestLapTime(car_id)
+    splits = li.getSplits(car_id)
+    split1 = splits[0]
+    split2 = splits[1]
+    split3 = splits[2]
     lap_count = li.getLapCount(car_id)
     lap_delta = li.getLapDelta(car_id)
     is_invalid = li.getInvalid(car_id)
     split = li.getSplit()
     lap_pos = ci.getLocation(car_id)
 
-    dLapInfo = {
-        "lap_position": lap_pos,
-        "flag": 2,
-        "timestamp": ts,
-        "current": current_lap,
-        "last": last_lap,
-        "best": best_lap,
-        "splits": splits,
-        "invalid:": str(is_invalid)
-    }
+    # dLapInfo = {
+    #     "lap_position": lap_pos,
+    #     "flag": 2,
+    #     "timestamp": ts,
+    #     "current": current_lap,
+    #     "last": last_lap,
+    #     "best": best_lap,
+    #     "splits": splits,
+    #     "invalid:": str(is_invalid)
+    # }
 
-    store.lapWriter.writerow([lap_pos, lap_count, current_lap, last_lap, best_lap, lap_delta, splits, str(is_invalid), ts])
+    store.lapWriter.writerow([lap_pos, lap_count, current_lap, last_lap, best_lap, lap_delta, split1, split2, split3, str(is_invalid), ts])
 
     # Aero functions called
     drag = ai.getDrag()
@@ -179,8 +182,13 @@ def acUpdate(deltaT):
     tyrewear = ti.getTyreWearValue(0)
     dirty = ti.getTyreDirtyLevel(0)
     temp_inner = ti.getTyreTemperature(0, 'i')
+    temp_middle = ti.getTyreTemperature(0, 'm')
+    temp_outer = ti.getTyreTemperature(0, 'o')
+    temp_core = ti.getTyreTemperature(0, 'c')
     tyre_pressure = ti.getTyrePressure(0)
     brake_temp = ti.getBrakeTemperature(2)
+
+    store.tyreWriter.writerow([tyrewear, dirty, temp_inner, temp_middle, temp_outer, temp_core, tyre_pressure, brake_temp])
 
 
     # if session_status == 2 and not is_in_pit:

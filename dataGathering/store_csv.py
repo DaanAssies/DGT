@@ -32,3 +32,11 @@ def init():
 
     header = ['lap position', 'lap count', 'current lap', 'last lap', 'best lap', 'lap delta', 'split1', 'split2', 'split3', 'invalid', 'timestamp']
     lapWriter.writerow(header)
+
+    global tyreWriter
+
+    csvfile = open(os.path.abspath(os.path.join(output_dir, "tyre.csv")), 'w', newline='')
+    tyreWriter = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+
+    header = ['tyre wear', 'dirty', 'inner temp', 'middle temp', 'outer temp', 'core temp', 'tyre pressure', 'brake temp' ]
+    tyreWriter.writerow(header)

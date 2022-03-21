@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import os
 
 dirname = os.path.dirname(__file__)
-dirdata = os.path.abspath(os.path.join(dirname, "1647103138"))
+dirdata = os.path.abspath(os.path.join(dirname, "1647854259"))
 lap_file = "lap.csv"
 car_file = "car.csv"
 input_file = "input.csv"
