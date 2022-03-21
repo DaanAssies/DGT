@@ -12,30 +12,69 @@ from functions.shared_memory import info
 
 
 # returns type ACC_SESSION_TYPE
-# unknown = -1, practice = 0, qualifying = 1, race = 2, hotlap = 3, timeattack = 4, rest irrelevant
 # For some reason this only works after x amount of ticks after loading into the game. It returns 0 before that.
-def getSessionType():
+def get_session_type():
+    """
+    Retrieve session type. unknown = -1, practice = 0, qualifying = 1, race = 2, hotlap = 3, timeattack = 4, rest irr
+    unknown = -1, practice = 0, qualifying = 1, race = 2, hotlap = 3, timeattack = 4, rest irrelevant
+    :return: type ACC_SESSION_TYPE current session type
+    """
     return info.graphics.session
 
-def getDriverName(car=0):
-    return ac.getDriverName(car)
 
-def getCarName(car=0):
-    return ac.getCarName(car)
+def get_driver_name(car: int = 0) -> str:
+    """
+    Retrieve nickname of the driver of a car
+    :param car: the car selected (user is 0)
+    :return: driver name
+    """
+    return ac.get_driver_name(car)
 
-def getTrackName():
-    return ac.getTrackName(0)
 
-def getTrackConfig():
+def get_car_name(car: int = 0) -> str:
+    """
+    Retrieve name of a car. Car type (e.g. La Ferrari)
+    :param car: the car selected (user is 0)
+    :return: car name
+    """
+    return ac.get_car_name(car)
+
+
+def get_track_name() -> str:
+    """
+    Retrieve name of the current track driven
+    :return: track driven
+    """
+    return ac.get_track_name(0)
+
+
+def get_track_config() -> str:
+    """
+    Retrieve configuration of track driven
+    :return: configuration of track
+    """
     return ac.getTrackConfiguration(0)
 
-def getTrackLength():
-    return ac.getTrackLength(0)
 
-# Returns session's max no. of cars
-def getCarsCount():
-    return ac.getCarsCount()
+def get_track_length() -> float:
+    """
+    Retrieve the track length
+    :return: track length in m
+    """
+    return ac.get_track_length(0)
 
-# Returns the session status. 0=OFF, 1= REPLAY, 2=LIVE, 3=PAUSE
-def getSessionStatus():
+
+def get_cars_count() -> int:
+    """
+    Retrieve session's max number of cars
+    :return: maximum car count in current session
+    """
+    return ac.get_cars_count()
+
+
+def get_session_status() -> int:
+    """
+    Retrieve the status of current session 0=OFF, 1= REPLAY, 2=LIVE, 3=PAUSE
+    :return: session status
+    """
     return info.graphics.status

@@ -10,30 +10,53 @@ os.environ['PATH'] = os.environ['PATH'] + ";."
 
 from functions.shared_memory import info
 
-# 0 if no, 1 if yes
-def getHasDRS():
+
+def get_has_drs() -> int:
+    """
+    Retrieves whether car driven by player has DRS
+    :return: 0 if no DRS, 1 if there is DRS
+    """
     return info.static.hasDRS
 
-# 0 if no, 1 if yes
-def getHasERS():
+
+def get_has_ers() -> int:
+    """
+    Retrieves whether car driven by player has ERS
+    :return: 0 if no ERS, 1 if there is ERS
+    """
     return info.static.hasERS
 
-# 0 if no, 1 if yes
-def getHasKERS():
+
+def get_has_kers() -> int:
+    """
+    Retrieves whether car driven by player has KERS
+    :return: 0 if no KERS, 1 if there is KERS
+    """
     return info.static.hasKERS
 
-# abs level
-def ABSLevel():
+
+def abs_level() -> int:
+    """
+    Retrieves the ABS level active for car driven by player (seems to be buggy)
+    :return: value between 0 and 1, the higher, the stronger the ABS
+    """
     return info.physics.abs
 
 
-# Returns 1000000 if the car does not have this statistic
-def getMaxRPM():
+def get_max_rpm() -> int:
+    """
+    Retrieves the Maximum RPM of car driven by player
+    :return: the maximum RPM
+    """
     if info.static.maxRpm:
         return info.static.maxRpm
     else:
         return 1000000
 
-# Maximum fuel in KGs
-def getMaxFuel():
+
+def get_max_fuel() -> int:
+    """
+    Retrieves the maximum fuel of car driven by player
+    :return: the maximum fuel (in KG (or maybe even Liters))
+    """
     return info.static.maxFuel
