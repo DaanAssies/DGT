@@ -1,12 +1,15 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+import pickle
 
 dirname = os.path.dirname(__file__)
-dirdata = os.path.abspath(os.path.join(dirname, "1647854259"))
+dirdata = os.path.abspath(os.path.join(dirname, "1647866067"))
 lap_file = "lap.csv"
 car_file = "car.csv"
 input_file = "input.csv"
+pickledir = os.path.abspath(os.path.join(dirname, "1648490239p"))
+picklefile = os.path.join(pickledir, "input.pkl")
 
 def getNumpy(file):
     with open(os.path.join(dirdata, file), 'r'):
@@ -46,15 +49,29 @@ def getLapPosition(file, lap):
             time.append(m[2])
     return pos, time
 
+def unpickle(file):
+    print(file)
+    f = open(file, 'rb')
+    unpickler = pickle.Unpickler(f)
+    res = []
+    while True:
+        try:
+            x = unpickler.load()
+            res.append(x)
+        except EOFError:
+            return res
+
+
 def createPlot(x, y):
     plt.plot(x, y)
     plt.show()
 
 def main():
-    speed, time = getSpeed(car_file, 1)
-    pos, rel_time = getLapPosition(lap_file, 1)
-    print(len(pos))
-    createPlot(rel_time, speed)
+    # speed, time = getSpeed(car_file, 1)
+    # pos, rel_time = getLapPosition(lap_file, 1)
+    # print(len(pos))
+    # createPlot(rel_time, speed)
+    print(unpickle(picklefile))
 
 
 if __name__ == "__main__":

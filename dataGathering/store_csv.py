@@ -6,7 +6,7 @@ dirname = os.path.dirname(__file__)
 
 def init():
     cur_time = str(round(time.time()))
-    output_dir = os.path.abspath(os.path.join(dirname, cur_time))
+    output_dir = os.path.abspath(os.path.join(dirname, "out", cur_time)) + 'c'
     os.makedirs(output_dir)
 
     global inputWriter
