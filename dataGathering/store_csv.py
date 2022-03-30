@@ -14,7 +14,7 @@ def init():
     csvfile = open(os.path.abspath(os.path.join(output_dir, "input.csv")), 'w', newline='')
     inputWriter = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
-    header = ['gas', 'brake', 'steer', 'timestamp']
+    header = ['gas', 'brake', 'steer', 'fuel', 'timestamp']
     inputWriter.writerow(header)
 
     global carWriter
@@ -38,5 +38,5 @@ def init():
     csvfile = open(os.path.abspath(os.path.join(output_dir, "tyre.csv")), 'w', newline='')
     tyreWriter = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
-    header = ['tyre wear', 'dirty', 'inner temp', 'middle temp', 'outer temp', 'core temp', 'tyre pressure', 'brake temp' ]
+    header = ['tyre wear0', 'dirty0', 'inner temp0', 'middle temp0', 'outer temp0', 'core temp0', 'tyre pressure0', 'slip ratio0', 'slip angle0', 'tyre wear1', 'dirty1', 'inner temp1', 'middle temp1', 'outer temp1', 'core temp1', 'tyre pressure1', 'slip ratio1', 'slip angle1', 'tyre wear2', 'dirty2', 'inner temp2', 'middle temp2', 'outer temp2', 'core temp2', 'tyre pressure2', 'slip ratio2', 'slip angle2', 'tyre wear3', 'dirty3', 'inner temp3', 'middle temp3', 'outer temp3', 'core temp3', 'tyre pressure3', 'slip ratio3', 'slip angle3', 'brake temp', 'timestamp' ]
     tyreWriter.writerow(header)

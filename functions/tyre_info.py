@@ -40,3 +40,11 @@ def getTyrePressure(tyre):
 # Stays 26.0 for some reason
 def getBrakeTemperature(loc):
     return info.physics.brakeTemp[loc]
+
+# Slip ratio, between 0 and 1
+def getSlipRatio(car=0):
+    return ac.getCarState(car, acsys.CS.SlipRatio)
+
+# Angle of slip
+def getslipAngle(car=0):
+    return ac.getCarState(car, acsys.CS.SlipAngle)
