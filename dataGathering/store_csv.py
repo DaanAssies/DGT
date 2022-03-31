@@ -30,7 +30,7 @@ def init():
     csvfile = open(os.path.abspath(os.path.join(output_dir, "lap.csv")), 'w', newline='')
     lapWriter = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
-    header = ['lap position', 'lap count', 'current lap', 'last lap', 'best lap', 'lap delta', 'split1', 'split2', 'split3', 'invalid', 'timestamp']
+    header = ['lap position', 'lap count', 'current lap', 'last lap', 'best lap', 'lap delta', 'split1', 'split2', 'split3', 'invalid', 'track', 'track config', 'timestamp']
     lapWriter.writerow(header)
 
     global tyreWriter

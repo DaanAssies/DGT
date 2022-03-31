@@ -133,6 +133,8 @@ def acUpdate(deltaT):
     is_invalid = li.getInvalid(car_id)
     split = li.getSplit()
     lap_pos = ci.getLocation(car_id)
+    track = si.getTrackName()
+    track_config = si.getTrackConfig()
 
     # lapList = [lap_pos, lap_count, current_lap, last_lap, best_lap, lap_delta, split1, split2, split3, str(is_invalid), ts]
     # dLapInfo = {
@@ -151,7 +153,7 @@ def acUpdate(deltaT):
     # json.dump(dLapInfo, lapFile)
     # pickle.lapPickler.dump(lapList)
     csv.lapWriter.writerow(
-        [lap_pos, lap_count, current_lap, last_lap, best_lap, lap_delta, split1, split2, split3, str(is_invalid), ts])
+        [lap_pos, lap_count, current_lap, last_lap, best_lap, lap_delta, split1, split2, split3, str(is_invalid), track, track_config, ts])
 
     # Tyre functions called
     tyrewear0 = ti.getTyreWearValue(0)
