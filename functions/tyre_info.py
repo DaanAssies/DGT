@@ -28,7 +28,7 @@ def get_tyre_dirty(tyre: int) -> float:
     """
     Retrieve "dirty level" or a tyre. 0 is clean, 5 is most dirty
     :param tyre: int [0,3]
-    :return: dirty level [0,5]
+    :return: dirty level [0,10]
     """
     return info.physics.tyreDirtyLevel[tyre]
 
@@ -63,7 +63,7 @@ def get_tyre_pressure(tyre: int) -> float:
     return info.physics.wheelsPressure[tyre]
 
 # Stays 26.0 for some reason
-def get_brake_temp(loc: int) -> float:
+def get_brake_temp(loc: int = 0) -> float:
     """
     Retrieve temperature of a brake
     :param loc: [0,3]
@@ -71,10 +71,45 @@ def get_brake_temp(loc: int) -> float:
     """
     return info.physics.brakeTemp[loc]
 
+# These return a 4D vector
+
 # Slip ratio, between 0 and 1
-def getSlipRatio(car=0):
+def get_slip_ratio(car: int = 0):
     return ac.getCarState(car, acsys.CS.SlipRatio)
 
-# Angle of slip
-def getslipAngle(car=0):
+# Angle of slip, angle between the desired direction and the actual direction of the vehicle [0, 360], degrees
+def get_slip_angle(car: int = 0):
     return ac.getCarState(car, acsys.CS.SlipAngle)
+
+# Angle in degrees
+def get_camber(car: int = 0):
+    return ac.getCarState(car, acsys.CS.CamberDeg)
+
+# Self alligning torque [0, ...]
+def get_torque(car: int = 0):
+    return ac.getCarState(car, acsys.CS.Mz)
+
+# Load on each tyre [0, ...]
+def get_load(car: int = 0):
+    return ac.getCarState(car, acsys.CS.Load)
+
+# Vertical suspension travel [0, ...]
+def get_suspension_travel(car: int = 0):
+    return ac.getCarState(car, acsys.CS.SuspensionTravel)
+
+# Normal vector to tyre's contact point, in x,y,z
+def get_tyre_contact_normal(car: int = 0, tyre: int = 0):
+    return ac.getCarState(car, acsys.CS.TyreContactNormal, tyre)
+
+# Tyre contact point with the tarmac, in x,y,z
+def get_tyre_contact_point(car: int = 0, tyre: int = 0):
+    return ac.getCarState(car, acsys.CS.TyreContactPoint, tyre)
+
+# Always returns -1
+def get_tyre_heading_vector(car: int = 0, tyre: int = 0):
+    return ac.getCarState(car, acsys.CS.TyreHeadingVector, tyre)
+
+# Always returns -1
+def get_tyre_right_vector(car: int = 0, tyre: int = 0):
+    return ac.getCarState(car, acsys.CS.TyreRightVector, tyre)
+

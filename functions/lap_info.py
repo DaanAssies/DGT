@@ -3,7 +3,6 @@ import sys
 import ac
 import acsys
 from functions.shared_memory import info
-from typing import Union
 
 sysdir = os.path.dirname(__file__) + '/../stdlib64'
 sys.path.insert(0, sysdir)
@@ -24,7 +23,7 @@ def format_time(millis: int) -> str:
     return "{:02d}:{:02d}.{:03d}".format(m, s, ms)
 
 
-def get_current_lap_time(car: int = 0, formatted: bool = False) -> Union[int, str]:
+def get_current_lap_time(car: int = 0, formatted: bool = False):
     """
     Retrieves the current lap time of the car selected
     :param car: the car selected (user is 0)
@@ -41,7 +40,7 @@ def get_current_lap_time(car: int = 0, formatted: bool = False) -> Union[int, st
         return ac.getCarState(car, acsys.CS.LapTime)
 
 
-def get_last_lap_time(car: int = 0, formatted: bool = False) -> Union[int, str]:
+def get_last_lap_time(car: int = 0, formatted: bool = False):
     """
     Retrieves the last lap time of the car selected
     :param car: the car selected (user is 0)
@@ -58,7 +57,7 @@ def get_last_lap_time(car: int = 0, formatted: bool = False) -> Union[int, str]:
         return ac.getCarState(car, acsys.CS.LastLap)
 
 
-def get_best_lap_time(car: int = 0, formatted: bool = False) -> Union[int, str]:
+def get_best_lap_time(car: int = 0, formatted: bool = False):
     """
     Retrieve the best lap time recorded, does not save if invalidated lap
     :param car: the car selected (user is 0)
@@ -75,7 +74,7 @@ def get_best_lap_time(car: int = 0, formatted: bool = False) -> Union[int, str]:
         return ac.getCarState(car, acsys.CS.BestLap)
 
 
-def get_splits(car: int = 0, formatted: bool = False) -> Union[list, str]:
+def get_splits(car: int = 0, formatted: bool = False):
     """
     Retrieve the split times of the completed lap
     :param car: the car selected (user is 0)

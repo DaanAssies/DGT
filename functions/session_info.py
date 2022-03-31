@@ -37,7 +37,7 @@ def get_car_name(car: int = 0) -> str:
     :param car: the car selected (user is 0)
     :return: car name
     """
-    return ac.get_car_name(car)
+    return ac.getCarName(car)
 
 
 def get_track_name() -> str:
@@ -45,7 +45,7 @@ def get_track_name() -> str:
     Retrieve name of the current track driven
     :return: track driven
     """
-    return ac.get_track_name(0)
+    return ac.getTrackName(0)
 
 
 def get_track_config() -> str:
@@ -61,7 +61,7 @@ def get_track_length() -> float:
     Retrieve the track length
     :return: track length in m
     """
-    return ac.get_track_length(0)
+    return ac.getTrackLength(0)
 
 
 def get_cars_count() -> int:
@@ -69,7 +69,7 @@ def get_cars_count() -> int:
     Retrieve session's max number of cars
     :return: maximum car count in current session
     """
-    return ac.get_cars_count()
+    return ac.getCarsCount()
 
 
 def get_session_status() -> int:
@@ -78,3 +78,21 @@ def get_session_status() -> int:
     :return: session status
     """
     return info.graphics.status
+
+# in KG
+def get_car_ballast(car: int = 0) -> int:
+    return ac.getCarBallast(car)
+
+# In radians
+def get_caster(car: int = 0):
+    return ac.getCarState(car, acsys.CS.Caster)
+
+# Radius of each tyre [0, ...]. I return just one tyre because it should be the same for all tyres
+def get_radius(car: int = 0):
+    return ac.getCarState(car, acsys.CS.TyreRadius)[0]
+
+def get_car_min_height(car: int = 0) -> int:
+    return ac.getCarMinHeight(car)
+
+def get_car_ffb() -> int:
+    return ac.getCarFFB()

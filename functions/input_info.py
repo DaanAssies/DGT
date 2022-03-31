@@ -43,3 +43,7 @@ def get_steer_input(car: int = 0) -> float:
     :return: steering input to the car, depends on the settings in AC, in degrees
     """
     return ac.getCarState(car, acsys.CS.Steer)
+
+# Test on not laptop [0, ...]
+def get_last_ff(car: int = 0) -> float:
+    return ac.getCarState(car, acsys.CS.LastFF)

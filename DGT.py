@@ -12,14 +12,12 @@ import ac
 import time
 
 import functions.car_info as ci
-import functions.car_stats as cs
 import functions.input_info as ii
 import functions.lap_info as li
 import functions.session_info as si
 import functions.tyre_info as ti
 import dataGathering.store_csv as csv
 import os
-import dataGathering.store_pickle as pickle
 
 dirname = os.path.dirname(__file__)
 outputs = os.path.abspath(os.path.join(dirname, "dataGathering"))
@@ -32,182 +30,140 @@ json_dir = os.path.abspath(os.path.join(outputs, "out", cur_time)) + 'j'
 def acMain(ac_version):
     global csvfile, writer
 
-    # For JSON dir + file creation
-    # os.makedirs(json_dir)
-    # global inputFile
-    # inputFile = open(os.path.abspath(os.path.join(json_dir, "input.json")), 'w+')
-    # global carFile
-    # carFile = open(os.path.abspath(os.path.join(json_dir, "car.json")), 'w+')
-    # global lapFile
-    # lapFile = open(os.path.abspath(os.path.join(json_dir, "lap.json")), 'w+')
-    # global tyreFile
-    # tyreFile = open(os.path.abspath(os.path.join(json_dir, "tyre.json")), 'w+')
-
     display = ac.newApp("DGT")
     ac.setSize(display, 300, 300)
 
-    # Display settings for testing
-    # Increase the third variable of ac.setPosition() by 30 for every variable added
-
     # Initialize dirs and files
     csv.init()
-    # pickle.init()
+
+    # Write to session.csv with information about the session
+    session_type = si.get_session_type()
+    car = si.get_car_name()
+    car_ballast = si.get_car_ballast()
+    caster = si.get_caster()
+    radius = si.get_radius()
+    min_height = si.get_car_min_height()
+    ffb = si.get_car_ffb()
+    track = si.get_track_name()
+    track_config = si.get_track_config()
+    track_len = si.get_track_length()
+
+    csv.sessionWriter.writerow([session_type, car, car_ballast, caster, radius, min_height, ffb, track, track_config, track_len])
+
+
 
     return "DGT"
 
 
 def acUpdate(deltaT):
     global writer
-    global session_status
-    # GLOBAL VARIABLES FOR LABELS ON THE DISPLAY
-    global l_drag, l_lift_front, l_lift_rear
-    # GLOBAL VARIABLES FOR TRACK CONDITIONS
-    global wind_speed, wind_dir
-    # GLOBAL VARIABLES FOR INPUT
-    global gas_input, brake_input, steer_input, clutch
-    # GLOBAL VARIABLES FOR CAR INFO
-    global car_speed, rpm, delta_ahead, delta_behind, location, world_location, gear, damage, fuel
-    # GLOBAL VARIABLES FOR LAP TIMES
-    global current_lap, last_lap, best_lap, splits, lap_count, is_invalid, split, track_pos
-    # GLOBAL VARIABLES FOR AERO
-    global drag, lift_front, lift_rear
-    # GLOBAL VARIABLES FOR TYRES
 
     ts = round(time.time() * 1000)
 
-    session_status = si.getSessionStatus()
+    session_status = si.get_session_status()
 
     # Input info functions called
-    gas_input = ii.getGasInput(car_id)
-    brake_input = ii.getBrakeInput(car_id)
-    steer_input = ii.getSteerInput(car_id)
-    clutch = ii.getClutch(car_id)
+    gas_input = ii.get_gas_input(car_id)
+    brake_input = ii.get_brake_input(car_id)
+    steer_input = ii.get_steer_input(car_id)
+    clutch = ii.get_clutch(car_id)
+    last_ff = ii.get_last_ff()
 
-    # inputList = [gas_input, brake_input, steer_input, ts]
-    # dInputInfo = {
-    #     "gas": gas_input,
-    #     "brake": brake_input,
-    #     "steering": steer_input,
-    #     "timestamp": ts
-    # }
-    # 
-    # json.dump(dInputInfo, inputFile)
-    # pickle.inputPickler.dump(inputList)
-    csv.inputWriter.writerow([gas_input, brake_input, steer_input, ts])
+    csv.inputWriter.writerow([gas_input, brake_input, steer_input, clutch, last_ff, ts])
 
-    # Car info functions called
-    car_speed = ci.getSpeed(car_id)
-    rpm = ci.getRPM(car_id)
-    delta_ahead = ci.getDeltaToCarAhead(True)
-    delta_behind = ci.getDeltaToCarBehind(True)
-    world_location = ci.getWorldLocation()
-    is_in_pit = ci.getCarInPit()
-    gear = ci.getFormattedGear(car_id, True)
-    position = ci.getPosition(car_id)
-    drs_enabled = ci.getDRSEnabled()
-    damage = ci.getCarDamage("front")
-    fuel = ci.getFuel()
+    # Car info functions called.
+    car_speed = ci.get_speed(car_id)
+    rpm = ci.get_rpm(car_id)
+    gear = ci.get_gear(car_id, True)
+    drs_enabled = ci.get_drs_enabled()
+    damage = ci.get_car_damage("front")
+    fuel = ci.get_fuel()
+    cg_height = ci.get_cg_height()
+    dt_speed = ci.get_drive_train_speed()
 
-    # carList = [car_speed, rpm, gear, ts]
-    # dCarInfo = {
-    #     "car_speed": car_speed,
-    #     "rpm": rpm,
-    #     "gear": gear,
-    #     "timestamp": ts
-    # }
-    # 
-    # json.dump(dCarInfo, carFile)
-    # pickle.carPickler.dump(carList)
-    csv.carWriter.writerow([car_speed, rpm, gear, fuel, ts])
+    csv.carWriter.writerow([car_speed, rpm, gear, fuel, drs_enabled, damage, cg_height, dt_speed, ts])
 
     # Lap info functions called
-    current_lap = li.getCurrentLapTime(car_id)
-    last_lap = li.getLastLapTime(car_id)
-    best_lap = li.getBestLapTime(car_id)
-    splits = li.getSplits(car_id)
-    split1 = splits[0]
-    split2 = splits[1]
-    split3 = splits[2]
-    lap_count = li.getLapCount(car_id)
-    lap_delta = li.getLapDelta(car_id)
-    is_invalid = li.getInvalid(car_id)
-    split = li.getSplit()
-    lap_pos = ci.getLocation(car_id)
-    track = si.getTrackName()
-    track_config = si.getTrackConfig()
+    current_lap = li.get_current_lap_time(car_id)
+    last_lap = li.get_last_lap_time(car_id)
+    best_lap = li.get_best_lap_time(car_id)
+    lap_count = li.get_lap_count(car_id)
+    lap_delta = li.get_lap_delta(car_id)
+    is_invalid = li.get_invalid(car_id)
+    split = li.get_split()
+    lap_pos = ci.get_location(car_id)
 
-    # lapList = [lap_pos, lap_count, current_lap, last_lap, best_lap, lap_delta, split1, split2, split3, str(is_invalid), ts]
-    # dLapInfo = {
-    #     "lap_position": lap_pos,
-    #     "lap_count": lap_count,
-    #     "current_lap": current_lap,
-    #     "last_lap": last_lap,
-    #     "best_lap": best_lap,
-    #     "split1": split1,
-    #     "split2": split2,
-    #     "split3": split3,
-    #     "invalid:": str(is_invalid),
-    #     "timestamp": ts
-    # }
-    # 
-    # json.dump(dLapInfo, lapFile)
-    # pickle.lapPickler.dump(lapList)
+    # Does not work on some version of ac
+    # splits = li.get_splits(car_id)
+    # split1 = splits[0]
+    # split2 = splits[1]
+    # split3 = splits[2]
+
     csv.lapWriter.writerow(
-        [lap_pos, lap_count, current_lap, last_lap, best_lap, lap_delta, split1, split2, split3, str(is_invalid), track, track_config, ts])
+        [lap_pos, lap_count, current_lap, last_lap, best_lap, lap_delta, split, str(is_invalid), ts])
 
     # Tyre functions called
-    tyrewear0 = ti.getTyreWearValue(0)
-    dirty0 = ti.getTyreDirtyLevel(0)
-    temp_inner0 = ti.getTyreTemperature(0, 'i')
-    temp_middle0 = ti.getTyreTemperature(0, 'm')
-    temp_outer0 = ti.getTyreTemperature(0, 'o')
-    temp_core0 = ti.getTyreTemperature(0, 'c')
-    tyre_pressure0 = ti.getTyrePressure(0)
-    slip_ratio0, slip_ratio1, slip_ratio2, slip_ratio3 = ti.getSlipRatio()
-    slip_angle0, slip_angle1, slip_angle2, slip_angle3 = ti.getslipAngle(0)
-    tyrewear1 = ti.getTyreWearValue(1)
-    dirty1 = ti.getTyreDirtyLevel(1)
-    temp_inner1 = ti.getTyreTemperature(1, 'i')
-    temp_middle1 = ti.getTyreTemperature(1, 'm')
-    temp_outer1 = ti.getTyreTemperature(1, 'o')
-    temp_core1 = ti.getTyreTemperature(1, 'c')
-    tyre_pressure1 = ti.getTyrePressure(1)
-    tyrewear2 = ti.getTyreWearValue(2)
-    dirty2 = ti.getTyreDirtyLevel(2)
-    temp_inner2 = ti.getTyreTemperature(2, 'i')
-    temp_middle2 = ti.getTyreTemperature(2, 'm')
-    temp_outer2 = ti.getTyreTemperature(2, 'o')
-    temp_core2 = ti.getTyreTemperature(2, 'c')
-    tyre_pressure2 = ti.getTyrePressure(2)
-    tyrewear3 = ti.getTyreWearValue(3)
-    dirty3 = ti.getTyreDirtyLevel(3)
-    temp_inner3 = ti.getTyreTemperature(3, 'i')
-    temp_middle3 = ti.getTyreTemperature(3, 'm')
-    temp_outer3 = ti.getTyreTemperature(3, 'o')
-    temp_core3 = ti.getTyreTemperature(3, 'c')
-    tyre_pressure3 = ti.getTyrePressure(3)
-    brake_temp = ti.getBrakeTemperature(2)
+    tyrewear0 = ti.get_tyre_wear_value(0)
+    dirty0 = ti.get_tyre_dirty(0)
+    temp_inner0 = ti.get_tyre_temp(0, 'i')
+    temp_middle0 = ti.get_tyre_temp(0, 'm')
+    temp_outer0 = ti.get_tyre_temp(0, 'o')
+    temp_core0 = ti.get_tyre_temp(0, 'c')
+    tyre_pressure0 = ti.get_tyre_pressure(0)
+    slip_ratio0, slip_ratio1, slip_ratio2, slip_ratio3 = ti.get_slip_ratio()
+    slip_angle0, slip_angle1, slip_angle2, slip_angle3 = ti.get_slip_angle()
+    tyrewear1 = ti.get_tyre_wear_value(1)
+    dirty1 = ti.get_tyre_dirty(1)
+    temp_inner1 = ti.get_tyre_temp(1, 'i')
+    temp_middle1 = ti.get_tyre_temp(1, 'm')
+    temp_outer1 = ti.get_tyre_temp(1, 'o')
+    temp_core1 = ti.get_tyre_temp(1, 'c')
+    tyre_pressure1 = ti.get_tyre_pressure(1)
+    tyrewear2 = ti.get_tyre_wear_value(2)
+    dirty2 = ti.get_tyre_dirty(2)
+    temp_inner2 = ti.get_tyre_temp(2, 'i')
+    temp_middle2 = ti.get_tyre_temp(2, 'm')
+    temp_outer2 = ti.get_tyre_temp(2, 'o')
+    temp_core2 = ti.get_tyre_temp(2, 'c')
+    tyre_pressure2 = ti.get_tyre_pressure(2)
+    tyrewear3 = ti.get_tyre_wear_value(3)
+    dirty3 = ti.get_tyre_dirty(3)
+    temp_inner3 = ti.get_tyre_temp(3, 'i')
+    temp_middle3 = ti.get_tyre_temp(3, 'm')
+    temp_outer3 = ti.get_tyre_temp(3, 'o')
+    temp_core3 = ti.get_tyre_temp(3, 'c')
+    tyre_pressure3 = ti.get_tyre_pressure(3)
+    brake_temp = ti.get_brake_temp(2)
+    camber0, camber1, camber2, camber3 = ti.get_camber()
+    torque0, torque1, torque2, torque3 = ti.get_torque()
+    load0, load1, load2, load3 = ti.get_load()
+    sus0, sus1, sus2, sus3 = ti.get_suspension_travel()
+    cont_normal0 = ti.get_tyre_contact_normal(0, 0)
+    cont_normal1 = ti.get_tyre_contact_normal(0, 1)
+    cont_normal2 = ti.get_tyre_contact_normal(0, 2)
+    cont_normal3 = ti.get_tyre_contact_normal(0, 3)
+    cont_point0 = ti.get_tyre_contact_point(0, 0)
+    cont_point1 = ti.get_tyre_contact_point(0, 1)
+    cont_point2 = ti.get_tyre_contact_point(0, 2)
+    cont_point3 = ti.get_tyre_contact_point(0, 3)
 
-    # tyreList = [tyrewear0, dirty0, temp_inner0, temp_middle0, temp_outer0, temp_core0, tyre_pressure0, ts]
-    # dTyreInfo = {
-    #     "tyrewear": tyrewear,
-    #     "dirty": dirty,
-    #     "temp_inner": temp_inner0,
-    #     "temp_middle": temp_middle0,
-    #     "temp_outer": temp_outer0,
-    #     "temp_core": temp_core0,
-    #     "tyre_pressure": tyre_pressure,
-    #     "brake_temp": brake_temp,
-    #     "timestamp": ts
-    # }
-    #
-    # json.dump(tyreList, tyreFile)
-    # pickle.tyrePickler.dump(tyreList)
     csv.tyreWriter.writerow(
-        [tyrewear0, dirty0, temp_inner0, temp_middle0, temp_outer0, temp_core0, tyre_pressure0, slip_ratio0, slip_angle0, tyrewear1, dirty1,
-         temp_inner1, temp_middle1, temp_outer1, temp_core1, tyre_pressure1, slip_ratio1, slip_angle1, tyrewear2, dirty2, temp_inner2,
-         temp_middle2, temp_outer2, temp_core2, tyre_pressure2, slip_ratio2, slip_angle2, tyrewear3, dirty3, temp_inner3, temp_middle3,
-         temp_outer3, temp_core3, tyre_pressure3, slip_ratio3, slip_angle3, brake_temp, ts])
+        [tyrewear0, dirty0, temp_inner0, temp_middle0, temp_outer0, temp_core0, tyre_pressure0, slip_ratio0,
+         slip_angle0, camber0, torque0, load0, sus0, cont_normal0, cont_point0,
+         tyrewear1, dirty1, temp_inner1, temp_middle1, temp_outer1, temp_core1, tyre_pressure1, slip_ratio1,
+         slip_angle1, camber1, torque1, load1, sus1, cont_normal1, cont_point1,
+         tyrewear2, dirty2, temp_inner2, temp_middle2, temp_outer2, temp_core2, tyre_pressure2, slip_ratio2,
+         slip_angle2, camber2, torque2, load2, sus2, cont_normal2, cont_point2,
+         tyrewear3, dirty3, temp_inner3, temp_middle3, temp_outer3, temp_core3, tyre_pressure3, slip_ratio3,
+         slip_angle3, camber3, torque3, load3, sus3, cont_normal3, cont_point3,
+         ts])
+
+    # Race functions
+    delta_ahead = ci.get_delta_to_car_ahead(True)
+    delta_behind = ci.get_delta_to_car_behind(True)
+    world_location = ci.get_world_location()
+    is_in_pit = ci.get_car_in_pit_lane()
+    position = ci.get_position(car_id)
 
 
 def acShutdown():

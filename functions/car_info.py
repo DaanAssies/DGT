@@ -2,7 +2,6 @@ import os
 import sys
 import ac
 import acsys
-from typing import Union
 
 sysdir = os.path.dirname(__file__) + '/../stdlib64'
 sys.path.insert(0, sysdir)
@@ -40,7 +39,7 @@ def get_speed(car: int = 0, unit: str = "kmh") -> float:
         return ac.getCarState(car, acsys.CS.SpeedMS)
 
 
-def get_delta_to_car_ahead(formatted: bool = False) -> Union[float, str]:
+def get_delta_to_car_ahead(formatted: bool = False):
     """
     Retrieve time delta to the car ahead
     :param formatted: true if format should be in readable str
@@ -78,7 +77,7 @@ def get_delta_to_car_ahead(formatted: bool = False) -> Union[float, str]:
             return "+{:3.3f}".format(time)
 
 
-def get_delta_to_car_behind(formatted: bool = False) -> Union[float, str]:
+def get_delta_to_car_behind(formatted: bool = False):
     """
     Retrieve time delta to the car behind
     :param formatted: true if format should be in readable str
@@ -150,7 +149,7 @@ def get_drs_enabled() -> bool:
     return info.physics.drsEnabled
 
 # Formatted: 0=R, 1=N, 2=1, 3=2, 4=3, 5=4, 6=5, 7=6, 8=7, etc.
-def get_gear(car: int = 0, formatted: bool = True) -> Union[int, str]:
+def get_gear(car: int = 0, formatted: bool = True):
     """
     Retrieve current gear of a car. if Formatted, it returns string, if not, it returns int. 0=R, 1=N, 2=1, 3=2, etc.
     :param car: the car selected (user is 0)
@@ -219,3 +218,11 @@ def get_car_damage(loc: str = "front") -> float:
     else:
         # Centre
         return info.physics.carDamage[4]
+
+# Height of the center of gravity of the car from the ground [0, ...]
+def get_cg_height(car: int = 0) -> float:
+    return ac.getCarState(car, acsys.CS.CGHeight)
+
+# Speed Delivered to the wheels [0, ...]. Difference between actual speed might cause engine braking?
+def get_drive_train_speed(car: int = 0):
+    return ac.getCarState(car, acsys.CS.DriveTrainSpeed)
