@@ -14,7 +14,7 @@ def init():
     csvfile = open(os.path.abspath(os.path.join(output_dir, "input.csv")), 'w', newline='')
     inputWriter = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
-    header = ['gas', 'brake', 'steer', 'fuel', 'timestamp']
+    header = ['gas', 'brake', 'steer', 'timestamp']
     inputWriter.writerow(header)
 
     global carWriter
@@ -22,7 +22,7 @@ def init():
     csvfile = open(os.path.abspath(os.path.join(output_dir, "car.csv")), 'w', newline='')
     carWriter = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
-    header = ['speed', 'rpm', 'gear', 'timestamp']
+    header = ['speed', 'rpm', 'gear', 'fuel', 'timestamp']
     carWriter.writerow(header)
 
     global lapWriter
