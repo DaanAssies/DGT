@@ -70,3 +70,11 @@ def get_brake_temp(loc: int) -> float:
     :return: brake temperature
     """
     return info.physics.brakeTemp[loc]
+
+# Slip ratio, between 0 and 1
+def getSlipRatio(car=0):
+    return ac.getCarState(car, acsys.CS.SlipRatio)
+
+# Angle of slip
+def getslipAngle(car=0):
+    return ac.getCarState(car, acsys.CS.SlipAngle)
