@@ -1,13 +1,3 @@
-#################################################################################
-#   NOTES TO SELF:
-#   .csv ~ 3x more efficient in space:
-#   ~1min of logging: .csv = 123kb, .txt = 331kb
-#
-#
-#
-#
-#################################################################################
-
 import ac
 import time
 
@@ -151,11 +141,9 @@ def acUpdate(deltaT):
     temp_outer3 = ti.get_tyre_temp(3, 'o')
     temp_core3 = ti.get_tyre_temp(3, 'c')
     tyre_pressure3 = ti.get_tyre_pressure(3)
-    brake_temp = ti.get_brake_temp(2)
     camber0, camber1, camber2, camber3 = ti.get_camber()
     torque0, torque1, torque2, torque3 = ti.get_torque()
     load0, load1, load2, load3 = ti.get_load()
-    sus0, sus1, sus2, sus3 = ti.get_suspension_travel()
     sus0, sus1, sus2, sus3 = ti.get_suspension_travel()
     cont_normal0 = ti.get_tyre_contact_normal(0, 0)
     cont_normal1 = ti.get_tyre_contact_normal(0, 1)
