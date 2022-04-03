@@ -141,3 +141,7 @@ def get_lap_delta(car: int = 0) -> float:
     :return: delta to the fastest lap in seconds (float)
     """
     return ac.getCarState(car, acsys.CS.PerformanceMeter)
+
+# Either 0, 1 or 2
+def get_current_sector():
+    return info.graphics.currentSectorIndex

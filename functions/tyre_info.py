@@ -3,6 +3,8 @@ import sys
 import ac
 import acsys
 
+# TODO: Could save tyre info in tuples rather than separate columns
+
 sysdir = os.path.dirname(__file__) + '/../stdlib64'
 sys.path.insert(0, sysdir)
 sys.path.insert(0, os.path.dirname(__file__) + 'shared_memory')
@@ -105,11 +107,18 @@ def get_tyre_contact_normal(car: int = 0, tyre: int = 0):
 def get_tyre_contact_point(car: int = 0, tyre: int = 0):
     return ac.getCarState(car, acsys.CS.TyreContactPoint, tyre)
 
-# Always returns -1
-def get_tyre_heading_vector(car: int = 0, tyre: int = 0):
-    return ac.getCarState(car, acsys.CS.TyreHeadingVector, tyre)
+# [x,y,z][tyre]
+def get_tyre_heading_vector(tyre: int = 0):
+    x = info.physics.tyreContactHeading[0][tyre]
+    y = info.physics.tyreContactHeading[1][tyre]
+    z = info.physics.tyreContactHeading[2][tyre]
+    res = (x, y, z)
+    return res
 
 # Always returns -1
 def get_tyre_right_vector(car: int = 0, tyre: int = 0):
     return ac.getCarState(car, acsys.CS.TyreRightVector, tyre)
 
+# Rad/s
+def get_angular_speed(tyre: int = 0):
+    return info.physics.wheelAngularSpeed[tyre]

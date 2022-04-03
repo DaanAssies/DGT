@@ -23,7 +23,7 @@ def init():
     csvfile = open(os.path.abspath(os.path.join(output_dir, "car.csv")), 'w', newline='')
     carWriter = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
-    header = ['speed', 'rpm', 'gear', 'fuel', 'drs enabled', 'damage', 'cg height', 'drive train speed', 'timestamp']
+    header = ['speed', 'rpm', 'gear', 'fuel', 'drs available', 'drs enabled', 'damage', 'cg height', 'drive train speed', 'velocity', 'acceleration', 'tc in use', 'abs in use', 'brake bias', 'engine brake mapping', 'timestamp']
     carWriter.writerow(header)
 
     global lapWriter
@@ -31,7 +31,7 @@ def init():
     csvfile = open(os.path.abspath(os.path.join(output_dir, "lap.csv")), 'w', newline='')
     lapWriter = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
-    header = ['lap position', 'lap count', 'current lap', 'last lap', 'best lap', 'lap delta', 'split', 'invalid', 'timestamp']
+    header = ['lap position', 'lap count', 'current lap', 'current sector', 'last lap', 'best lap', 'lap delta', 'split', 'invalid', 'timestamp']
     lapWriter.writerow(header)
 
     global tyreWriter
@@ -40,13 +40,13 @@ def init():
     tyreWriter = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
     header = ['tyre wear0', 'dirty0', 'inner temp0', 'middle temp0', 'outer temp0', 'core temp0', 'tyre pressure0', 'slip ratio0',
-              'slip angle0', 'camber0', 'torque0', 'load0', 'sus travel0', 'contact normal0', 'contact point0',
+              'slip angle0', 'camber0', 'torque0', 'load0', 'sus travel0', 'contact normal0', 'contact point0', 'contact heading0', 'angular speed0',
               'tyre wear1', 'dirty1', 'inner temp1', 'middle temp1', 'outer temp1', 'core temp1', 'tyre pressure1', 'slip ratio1',
-              'slip angle1', 'camber1', 'torque1', 'load1', 'sus travel1', 'contact normal1', 'contact point1',
+              'slip angle1', 'camber1', 'torque1', 'load1', 'sus travel1', 'contact normal1', 'contact point1', 'contact heading1', 'angular speed1',
               'tyre wear2', 'dirty2', 'inner temp2','middle temp2', 'outer temp2', 'core temp2', 'tyre pressure2', 'slip ratio2',
-              'slip angle2', 'camber2', 'torque2', 'load2', 'sus travel2', 'contact normal2', 'contact point2',
+              'slip angle2', 'camber2', 'torque2', 'load2', 'sus travel2', 'contact normal2', 'contact point2', 'contact heading2', 'angular speed2',
               'tyre wear3','dirty3', 'inner temp3', 'middle temp3', 'outer temp3', 'core temp3', 'tyre pressure3', 'slip ratio3',
-              'slip angle3', 'camber3', 'torque3', 'load3', 'sus travel3', 'contact normal3', 'contact point3',
+              'slip angle3', 'camber3', 'torque3', 'load3', 'sus travel3', 'contact normal3', 'contact point3', 'contact heading3', 'angular speed3',
               'timestamp']
     tyreWriter.writerow(header)
 
@@ -54,5 +54,5 @@ def init():
     csvfile = open(os.path.abspath(os.path.join(output_dir, "session.csv")), 'w', newline='')
     sessionWriter = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
-    header = ['session type', 'car', 'ballast', 'caster', 'tyre radius', 'min height', 'ffb', 'track', 'track config', 'track length']
+    header = ['driver name', 'session type', 'car', 'ballast', 'caster', 'tyre radius', 'min height', 'max torque', 'max power', 'max rpm', 'max sus travel', 'max turbo', 'tyre compound', 'ffb', 'track', 'track config', 'track length', 'air temp', 'air density', 'track temp', 'surface grip', 'assists']
     sessionWriter.writerow(header)

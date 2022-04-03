@@ -22,13 +22,13 @@ def get_session_type():
     return info.graphics.session
 
 
-def get_driver_name(car: int = 0) -> str:
+def get_driver_name() -> str:
     """
     Retrieve nickname of the driver of a car
     :param car: the car selected (user is 0)
     :return: driver name
     """
-    return ac.get_driver_name(car)
+    return info.static.playerNick
 
 
 def get_car_name(car: int = 0) -> str:
@@ -96,3 +96,47 @@ def get_car_min_height(car: int = 0) -> int:
 
 def get_car_ffb() -> int:
     return ac.getCarFFB()
+
+def get_air_temp():
+    return info.physics.airTemp
+
+def get_air_density():
+    return info.physics.airDensity
+
+def get_road_temp():
+    return info.physics.roadTemp
+
+def get_tyre_compound():
+    return info.graphics.tyreCompound
+
+# Between 0(%) and 1(00%)
+def get_surface_grip():
+    return info.graphics.surfaceGrip
+
+def get_max_torque():
+    return info.static.maxTorque
+
+def get_max_power():
+    return info.static.maxPower
+
+def get_max_rpm():
+    return info.static.maxRpm
+
+def get_max_sus_travel():
+    return info.static.suspensionMaxTravel
+
+def get_max_turbo():
+    return info.static.maxTurboBoost
+
+# Gets all the assists
+def get_assists():
+    fuel = info.static.aidFuelRate
+    line = info.graphics.idealLineOn
+    tyre = info.static.aidTireRate
+    dmg = info.static.aidMechanicalDamage
+    blankets = info.static.aidAllowTyreBlankets
+    stability = info.static.aidStability
+    clutch = info.static.aidAutoClutch
+    blip = info.static.aidAutoBlip
+    res = (fuel, line, tyre, dmg, blankets, stability, clutch, blip)
+    return res

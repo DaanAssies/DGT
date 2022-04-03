@@ -140,6 +140,9 @@ def get_position(car: int = 0) -> int:
     """
     return ac.getCarRealTimeLeaderboardPosition(car) + 1
 
+def get_drs_available():
+    return info.physics.drsAvailable
+
 # 0 if disabled, 1 if enabled
 def get_drs_enabled() -> bool:
     """
@@ -201,7 +204,7 @@ def get_car_in_pit_lane() -> bool:
 
 
 # Damage numbers go up to a high number. A slight tap results in a damage value of about 10
-def get_car_damage(loc: str = "front") -> float:
+def get_location_damage(loc: str = "front") -> float:
     """
     Retrieve car damage per side
     :param loc: front, rear, left or right
@@ -219,6 +222,15 @@ def get_car_damage(loc: str = "front") -> float:
         # Centre
         return info.physics.carDamage[4]
 
+def get_total_damage():
+    front = info.physics.carDamage[0]
+    rear = info.physics.carDamage[1]
+    left = info.physics.carDamage[2]
+    right = info.physics.carDamage[3]
+    centre = info.physics.carDamage[4]
+    res = (front, rear, left, right, centre)
+    return res
+
 # Height of the center of gravity of the car from the ground [0, ...]
 def get_cg_height(car: int = 0) -> float:
     return ac.getCarState(car, acsys.CS.CGHeight)
@@ -226,3 +238,34 @@ def get_cg_height(car: int = 0) -> float:
 # Speed Delivered to the wheels [0, ...]. Difference between actual speed might cause engine braking?
 def get_drive_train_speed(car: int = 0):
     return ac.getCarState(car, acsys.CS.DriveTrainSpeed)
+
+# Returns velocity in coordinates x,y,z
+def get_velocity():
+    x = info.physics.velocity[0]
+    y = info.physics.velocity[1]
+    z = info.physics.velocity[2]
+    res = (x, y, z)
+    return res
+
+def get_acceleration():
+    x = info.physics.accG[0]
+    y = info.physics.accG[1]
+    z = info.physics.accG[2]
+    res = (x, y, z)
+    return res
+
+# Checks whether tc is needed
+def get_tc_in_action():
+    return info.physics.tc
+
+# 0 for false, 1 for true
+def get_abs_in_action():
+    return info.physics.abs
+
+# Front brake bias between 0(%) and 1(00%)
+def get_brake_bias():
+    return info.physics.brakeBias
+
+# Different engine brake mappings
+def get_engine_brake():
+    return info.physics.engineBrake

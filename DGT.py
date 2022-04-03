@@ -37,18 +37,30 @@ def acMain(ac_version):
     csv.init()
 
     # Write to session.csv with information about the session
+    driver_name = si.get_driver_name()
     session_type = si.get_session_type()
     car = si.get_car_name()
     car_ballast = si.get_car_ballast()
     caster = si.get_caster()
     radius = si.get_radius()
     min_height = si.get_car_min_height()
+    max_torque = si.get_max_torque()
+    max_power = si.get_max_power()
+    max_rpm = si.get_max_rpm()
+    max_sus_travel = si.get_max_sus_travel()[0]
+    max_turbo = si.get_max_turbo()
     ffb = si.get_car_ffb()
     track = si.get_track_name()
     track_config = si.get_track_config()
     track_len = si.get_track_length()
+    air_temp = si.get_air_temp()
+    air_density = si.get_air_density()
+    road_temp = si.get_road_temp()
+    surface_grip = si.get_surface_grip()
+    tyre_comp = si.get_tyre_compound()
+    assists = si.get_assists()
 
-    csv.sessionWriter.writerow([session_type, car, car_ballast, caster, radius, min_height, ffb, track, track_config, track_len])
+    csv.sessionWriter.writerow([driver_name, session_type, car, car_ballast, caster, radius, min_height, max_torque, max_power, max_rpm, max_sus_travel, max_turbo, str(tyre_comp), ffb, track, track_config, track_len, air_temp, air_density, road_temp, surface_grip, assists])
 
 
 
@@ -59,9 +71,7 @@ def acUpdate(deltaT):
     global writer
 
     ts = round(time.time() * 1000)
-
     session_status = si.get_session_status()
-
     # Input info functions called
     gas_input = ii.get_gas_input(car_id)
     brake_input = ii.get_brake_input(car_id)
@@ -75,13 +85,20 @@ def acUpdate(deltaT):
     car_speed = ci.get_speed(car_id)
     rpm = ci.get_rpm(car_id)
     gear = ci.get_gear(car_id, True)
+    drs_available = ci.get_drs_available()
     drs_enabled = ci.get_drs_enabled()
-    damage = ci.get_car_damage("front")
+    damage = ci.get_total_damage()
     fuel = ci.get_fuel()
     cg_height = ci.get_cg_height()
     dt_speed = ci.get_drive_train_speed()
+    velocity = ci.get_velocity()
+    acc = ci.get_acceleration()
+    tc = ci.get_tc_in_action()
+    abrs = ci.get_abs_in_action()
+    brake_bias = ci.get_brake_bias()
+    engine_brake = ci.get_engine_brake()
 
-    csv.carWriter.writerow([car_speed, rpm, gear, fuel, drs_enabled, damage, cg_height, dt_speed, ts])
+    csv.carWriter.writerow([car_speed, rpm, gear, fuel, drs_available, drs_enabled, damage, cg_height, dt_speed, velocity, acc, tc, abrs, brake_bias, engine_brake, ts])
 
     # Lap info functions called
     current_lap = li.get_current_lap_time(car_id)
@@ -92,6 +109,7 @@ def acUpdate(deltaT):
     is_invalid = li.get_invalid(car_id)
     split = li.get_split()
     lap_pos = ci.get_location(car_id)
+    cur_sector = li.get_current_sector()
 
     # Does not work on some version of ac
     # splits = li.get_splits(car_id)
@@ -100,7 +118,7 @@ def acUpdate(deltaT):
     # split3 = splits[2]
 
     csv.lapWriter.writerow(
-        [lap_pos, lap_count, current_lap, last_lap, best_lap, lap_delta, split, str(is_invalid), ts])
+        [lap_pos, lap_count, current_lap, cur_sector, last_lap, best_lap, lap_delta, split, str(is_invalid), ts])
 
     # Tyre functions called
     tyrewear0 = ti.get_tyre_wear_value(0)
@@ -138,6 +156,7 @@ def acUpdate(deltaT):
     torque0, torque1, torque2, torque3 = ti.get_torque()
     load0, load1, load2, load3 = ti.get_load()
     sus0, sus1, sus2, sus3 = ti.get_suspension_travel()
+    sus0, sus1, sus2, sus3 = ti.get_suspension_travel()
     cont_normal0 = ti.get_tyre_contact_normal(0, 0)
     cont_normal1 = ti.get_tyre_contact_normal(0, 1)
     cont_normal2 = ti.get_tyre_contact_normal(0, 2)
@@ -146,19 +165,28 @@ def acUpdate(deltaT):
     cont_point1 = ti.get_tyre_contact_point(0, 1)
     cont_point2 = ti.get_tyre_contact_point(0, 2)
     cont_point3 = ti.get_tyre_contact_point(0, 3)
+    cont_heading0 = ti.get_tyre_heading_vector(0)
+    cont_heading1 = ti.get_tyre_heading_vector(1)
+    cont_heading2 = ti.get_tyre_heading_vector(2)
+    cont_heading3 = ti.get_tyre_heading_vector(3)
+    ang_speed0 = ti.get_angular_speed(0)
+    ang_speed1 = ti.get_angular_speed(1)
+    ang_speed2 = ti.get_angular_speed(2)
+    ang_speed3 = ti.get_angular_speed(3)
 
     csv.tyreWriter.writerow(
         [tyrewear0, dirty0, temp_inner0, temp_middle0, temp_outer0, temp_core0, tyre_pressure0, slip_ratio0,
-         slip_angle0, camber0, torque0, load0, sus0, cont_normal0, cont_point0,
+         slip_angle0, camber0, torque0, load0, sus0, cont_normal0, cont_point0, cont_heading0, ang_speed0,
          tyrewear1, dirty1, temp_inner1, temp_middle1, temp_outer1, temp_core1, tyre_pressure1, slip_ratio1,
-         slip_angle1, camber1, torque1, load1, sus1, cont_normal1, cont_point1,
+         slip_angle1, camber1, torque1, load1, sus1, cont_normal1, cont_point1, cont_heading1, ang_speed1,
          tyrewear2, dirty2, temp_inner2, temp_middle2, temp_outer2, temp_core2, tyre_pressure2, slip_ratio2,
-         slip_angle2, camber2, torque2, load2, sus2, cont_normal2, cont_point2,
+         slip_angle2, camber2, torque2, load2, sus2, cont_normal2, cont_point2, cont_heading2, ang_speed2,
          tyrewear3, dirty3, temp_inner3, temp_middle3, temp_outer3, temp_core3, tyre_pressure3, slip_ratio3,
-         slip_angle3, camber3, torque3, load3, sus3, cont_normal3, cont_point3,
+         slip_angle3, camber3, torque3, load3, sus3, cont_normal3, cont_point3, cont_heading3, ang_speed3,
          ts])
 
     # Race functions
+    # TODO: Add a check. If it's a race, also safe this data
     delta_ahead = ci.get_delta_to_car_ahead(True)
     delta_behind = ci.get_delta_to_car_behind(True)
     world_location = ci.get_world_location()
