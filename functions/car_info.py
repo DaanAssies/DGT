@@ -123,13 +123,17 @@ def get_location(car: int = 0) -> float:
     return ac.getCarState(car, acsys.CS.NormalizedSplinePosition)
 
 
-def get_world_location(car: int = 0) -> [float, float, float]:
+def get_world_location(car: int = 0):
     """
     Retrieve absolute location of a car
     :param car: the car selected (user is 0)
     :return: absolute location [x,y,z] ((0,x,0) is the middle)
     """
-    return ac.getCarState(car, acsys.CS.WorldPosition)
+    x = ac.getCarState(car, acsys.CS.WorldPosition)[0]
+    y = ac.getCarState(car, acsys.CS.WorldPosition)[1]
+    z = ac.getCarState(car, acsys.CS.WorldPosition)[2]
+    res = (x,y,z)
+    return res
 
 
 def get_position(car: int = 0) -> int:

@@ -87,8 +87,9 @@ def acUpdate(deltaT):
     abrs = ci.get_abs_in_action()
     brake_bias = ci.get_brake_bias()
     engine_brake = ci.get_engine_brake()
+    world_location = ci.get_world_location()
 
-    csv.carWriter.writerow([car_speed, rpm, gear, fuel, drs_available, drs_enabled, damage, cg_height, dt_speed, velocity, acc, tc, abrs, brake_bias, engine_brake, ts])
+    csv.carWriter.writerow([car_speed, rpm, gear, fuel, drs_available, drs_enabled, damage, cg_height, dt_speed, velocity, acc, tc, abrs, brake_bias, engine_brake, world_location, ts])
 
     # Lap info functions called
     current_lap = li.get_current_lap_time(car_id)

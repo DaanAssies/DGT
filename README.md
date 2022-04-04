@@ -11,6 +11,7 @@ The folder will be named after the current timestamp+c of starting the game.
 
 The following files and information will be stored, with their corresponding index: \
 **session.csv:**
+
 0. driver name: str
 1. session type: ACC_SESSION_TYPE \
 -1: unknown, 0: practice, 1: qualifying, 2: race, 3: hotlap, 

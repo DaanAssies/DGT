@@ -23,7 +23,7 @@ def init():
     csvfile = open(os.path.abspath(os.path.join(output_dir, "car.csv")), 'w', newline='')
     carWriter = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
-    header = ['speed', 'rpm', 'gear', 'fuel', 'drs available', 'drs enabled', 'damage', 'cg height', 'drive train speed', 'velocity', 'acceleration', 'tc in use', 'abs in use', 'brake bias', 'engine brake mapping', 'timestamp']
+    header = ['speed', 'rpm', 'gear', 'fuel', 'drs available', 'drs enabled', 'damage', 'cg height', 'drive train speed', 'velocity', 'acceleration', 'tc in use', 'abs in use', 'brake bias', 'engine brake mapping', 'world location', 'timestamp']
     carWriter.writerow(header)
 
     global lapWriter
